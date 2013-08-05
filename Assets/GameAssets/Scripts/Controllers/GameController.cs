@@ -1,31 +1,68 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using DeltaCommon.Component;
+using DeltaCommon.Entities;
 using DeltaCommon.Managers;
 
 public class GameController : MonoBehaviour {
-
-    Board mBoard = new Board();
+	
+	public GameObject mBoardObject;
+    Board mBoard;
 	Domino mDomino;
 	List<Domino> mDominos = new List<Domino>();
+    List<Bag> mBags;
 	
+    String mPlayer1Name = "Player 1";
+    String mPlayer2Name = "Player 2";
+	
+	const int kNumSlots = 3;
+
+
 	void Start () {
+		
+        GameEventManager.Initialize();
+        mBags = new List<Bag>(2);
+
+		mBoard = mBoardObject.GetComponent<Board>();
         // Init shared game data. 
-        Domino.InitializeGamePlayData();
- 
-		DominoGenerator generator = new DominoGenerator(mBoardController.StartPosition, typeof(Domino));
+		BoardController boardController = mBoard.Controller;
+		
+		DominoGenerator generator = new DominoGenerator(boardController.StartPosition, typeof(Domino));
 		GamePlayManager.Instance.Init(generator, mBoard.Controller);
 	
-	    mDomino = Domino.GetNextDomino();
-	    mDominos.Add(mDomino);
-	    mDomino.EnableGraphics();
-	    mDomino.SetHighlight(Domino.HighLightMode.Active);
-			
-	    InitializeDisplay();
+		// init draw bags
+        {
+            Bag bag = new Bag(kNumSlots, mBoard.Controller.Size, true);
 
-        // sets up a first player
-        ChangePlayer();
+            for (int i = 0; i < kNumSlots; i++)
+            {
+                Domino domino = GamePlayManager.Instance.GetNextDomino() as Domino;
+                domino.EnableGraphics(mBoard.Controller.Size);
+                bag.AddDomino(domino);
+            }
+            mBags.Add(bag);
+        }
+
+        {
+            Bag bag = new Bag(kNumSlots, mBoard.Controller.Size, false);
+
+            for (int i = 0; i < kNumSlots; i++)
+            {
+                Domino domino = GamePlayManager.Instance.GetNextDomino() as Domino;
+
+                //Column parameter set in bag.AddDomino.Remove following line
+                // domino.Controller.Column = -mBoardController.Size/2 + 1;
+
+                domino.EnableGraphics(mBoard.Controller.Size);
+                domino.UpdateDominoLocation(mBoard.Controller.Size);
+                bag.AddDomino(domino);
+            }
+            mBags.Add(bag);
+        }
+
 
 	}
 	

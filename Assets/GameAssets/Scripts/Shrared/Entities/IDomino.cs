@@ -31,8 +31,6 @@ namespace DeltaCommon.Entities
     {
         DominoController Controller { get; }
 
-        void Destroy();
-
         void MoveNorth();
         void MoveEast();
         void MoveSouth();

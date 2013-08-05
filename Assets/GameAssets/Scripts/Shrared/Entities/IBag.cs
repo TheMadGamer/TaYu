@@ -32,18 +32,6 @@ namespace DeltaCommon.Entities
             mDominoes = new IDomino[nSlots];
         }
 
-        public void Destroy()
-        {
-            for (int i = 0; i < mDominoes.Length; i++)
-            {
-                if (mDominoes[i] != null)
-                {
-                    mDominoes[i].Destroy();
-                }
-            }
-            mDominoes = null;
-        }
-
         public void RemoveDomino(IDomino domino)
         {
             for (int i = 0; i < mDominoes.Length; i++)
@@ -77,7 +65,6 @@ namespace DeltaCommon.Entities
             {
                 if (mDominoes[i].Controller.Label == label)
                 {
-                    mDominoes[i].Destroy();
                     mDominoes[i] = null;
                     break;
                 }
