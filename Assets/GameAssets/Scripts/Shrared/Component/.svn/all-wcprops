@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/oaktown/StonesTown/!svn/ver/281/trunk/Delta/Common/Component
+END
+BoardController.cs
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/oaktown/StonesTown/!svn/ver/268/trunk/Delta/Common/Component/BoardController.cs
+END
+IAnimationController.cs
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/oaktown/StonesTown/!svn/ver/131/trunk/Delta/Common/Component/IAnimationController.cs
+END
+CharacterController.cs
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/oaktown/StonesTown/!svn/ver/280/trunk/Delta/Common/Component/CharacterController.cs
+END
+Square.cs
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/oaktown/StonesTown/!svn/ver/281/trunk/Delta/Common/Component/Square.cs
+END
+StateMachine.cs
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/oaktown/StonesTown/!svn/ver/275/trunk/Delta/Common/Component/StateMachine.cs
+END
+DominoController.cs
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/oaktown/StonesTown/!svn/ver/129/trunk/Delta/Common/Component/DominoController.cs
+END
+ICharacterController.cs
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/oaktown/StonesTown/!svn/ver/280/trunk/Delta/Common/Component/ICharacterController.cs
+END

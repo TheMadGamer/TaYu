@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/oaktown/StonesTown/!svn/ver/281/trunk/Delta/Common/Entities
+END
+IRoadCharacter.cs
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/oaktown/StonesTown/!svn/ver/280/trunk/Delta/Common/Entities/IRoadCharacter.cs
+END
+DominoGenerator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/oaktown/StonesTown/!svn/ver/164/trunk/Delta/Common/Entities/DominoGenerator.cs
+END
+AIBot.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/oaktown/StonesTown/!svn/ver/266/trunk/Delta/Common/Entities/AIBot.cs
+END
+IDomino.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/oaktown/StonesTown/!svn/ver/99/trunk/Delta/Common/Entities/IDomino.cs
+END
+IFoodItem.cs
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/oaktown/StonesTown/!svn/ver/280/trunk/Delta/Common/Entities/IFoodItem.cs
+END
+IBoard.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/oaktown/StonesTown/!svn/ver/72/trunk/Delta/Common/Entities/IBoard.cs
+END
+IBag.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/oaktown/StonesTown/!svn/ver/281/trunk/Delta/Common/Entities/IBag.cs
+END

@@ -1,0 +1,5 @@
+Assembly-*
+Library/cache/*
+Library/metadata/*
+Temp/*
+Library/previews/*

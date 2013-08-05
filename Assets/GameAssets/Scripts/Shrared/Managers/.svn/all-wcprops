@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/oaktown/StonesTown/!svn/ver/283/trunk/Delta/Common/Managers
+END
+IAIManager.cs
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/oaktown/StonesTown/!svn/ver/164/trunk/Delta/Common/Managers/IAIManager.cs
+END
+GameEventManager.cs
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/oaktown/StonesTown/!svn/ver/123/trunk/Delta/Common/Managers/GameEventManager.cs
+END
+AnimationManager.cs
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/oaktown/StonesTown/!svn/ver/283/trunk/Delta/Common/Managers/AnimationManager.cs
+END
+GamePlayManager.cs
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/oaktown/StonesTown/!svn/ver/273/trunk/Delta/Common/Managers/GamePlayManager.cs
+END

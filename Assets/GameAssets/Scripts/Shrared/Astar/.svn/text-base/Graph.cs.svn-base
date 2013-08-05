@@ -1,0 +1,193 @@
+﻿#undef DEBUG
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Controls;
+using DeltaCommon.Component;
+namespace DeltaCommon.Astar
+{
+    public class Graph
+    {
+        List<Node> mNodes;
+        List<Link> mLinks;
+        string mGraphDescription;
+        public Graph()
+        {
+            mNodes = new List<Node>();
+            mLinks = new List<Link>();
+        }
+
+        #region Properties
+        public List<Node> Nodes
+        {
+            get
+            { return mNodes; }
+        }
+
+        public List<Link> Links
+        {
+            get
+            { return mLinks; }
+        }
+
+
+        public string GraphDescription
+        {
+            get
+            {
+                mGraphDescription = "Describe Graph" + "\n" + "Node List" + "\n";
+                foreach (Node n in mNodes)
+                {
+                    mGraphDescription += n.NodeDescription+ "\n";
+                }
+                mGraphDescription += "\n" + "Node List" + "\n";
+                foreach (Link l in mLinks)
+                {
+                    mGraphDescription += l.LinkDescription + "\n";
+                }
+                return mGraphDescription;
+            }
+        }
+    
+        #endregion
+
+        public void AddDoubleLink(Node Node1, Node Node2, float Weight)
+        {
+            AddLink(Node1, Node2, Weight);
+            AddLink(Node2, Node1, Weight);
+        }
+        
+        public bool AddLink(Link newLink)
+        {
+            if (newLink == null || mLinks.Contains(newLink)) return false;
+            if (!mNodes.Contains(newLink.StartNode) || !mNodes.Contains(newLink.EndNode))
+                throw new ArgumentException("Nodes do not belong to the graph.");
+            newLink.LinkId=mLinks.Count;
+            mLinks.Add(newLink);
+            return true;
+        }
+
+        public Link AddLink(Node startNode, Node endNode, float cost)
+        {
+            Link newLink = new Link(startNode, endNode,cost);
+            return AddLink(newLink) ? newLink : null;
+        }
+
+
+        public bool AddNode(Node newNode)
+        {
+            if (newNode == null || mNodes.Contains(newNode)) return false;
+            newNode.NodeId=mNodes.Count;
+            mNodes.Add(newNode);
+            return true;
+        }
+
+
+        // gets a path
+
+        public List<Node> GetPath(Node sourceNode, Node targetNode)
+        {
+            List<Node> mOpenNodeList = new List<Node>();
+            List<Node> mClosedNodeList = new List<Node>();
+            List<Node> revertPath = new List<Node>();
+            List<Node> path = new List<Node>();
+            
+            //create copies of nodes. We dont want to modify the nodes during the Path computation
+            Node source=new Node(sourceNode);
+            Node  target= new Node(targetNode);
+            float estimateLengthToTarget = Math.Abs(target.Position.X - source.Position.X) +Math.Abs(target.Position.Y - source.Position.Y);
+            source.G=0;
+            source.H=estimateLengthToTarget;
+            source.F=source.G+source.H;
+            Debug.WriteLine("source Node"+source.NodeDescription);
+            mOpenNodeList.Add(source);
+                
+            while (mOpenNodeList.Count > 0)            
+            {
+                Debug.WriteLine(DescribeList(mOpenNodeList, "OpenList"));
+                mOpenNodeList.Sort();
+                Node nodeLowestF = mOpenNodeList[0];
+                Debug.WriteLine("Lowest F"+ nodeLowestF.NodeDescription);
+                mOpenNodeList.RemoveAt(0);
+                //best Path found
+                if (nodeLowestF.NodeId == target.NodeId)
+                {
+                    string pathDescription = "Path Found";
+                    while (nodeLowestF.Parent != null)
+                    {
+                        revertPath.Add(nodeLowestF);
+                        nodeLowestF = nodeLowestF.Parent;
+                    }
+                    path.Add(source);
+                    pathDescription += " Node ID: " + source.NodeId;
+                    for (int i = 0; i < revertPath.Count; i++)
+                    {
+                        path.Add(revertPath[revertPath.Count-1-i]);
+                        pathDescription += " Node ID: " + path[1+i].NodeId;
+                    }
+                    Debug.WriteLine(pathDescription);
+                    break;
+                }
+                else
+                {
+                    /* stone testStone = new stone((int)nodeLowestF.P.Y, (int)nodeLowestF.P.X);
+                     * 
+                     * testStone.Star.InnerRadius = 0.2f;
+                       mCanvas.Children.Add(testStone);
+                       */
+                    mOpenNodeList.Remove(nodeLowestF);
+                    mClosedNodeList.Add(nodeLowestF);
+                    Debug.WriteLine(DescribeList(mClosedNodeList, "closed List"));
+                    foreach(Link link in nodeLowestF.OutLinks)
+                    {
+                        Node neighborNode=new Node(link.EndNode);
+                        int indexClosed = mClosedNodeList.IndexOf(neighborNode);
+                        if (indexClosed == -1)
+                        {
+                            float lengthToTarget = Math.Abs(target.Position.X - neighborNode.Position.X) + Math.Abs(target.Position.Y - neighborNode.Position.Y);
+                            neighborNode.H = lengthToTarget;
+                            neighborNode.G = nodeLowestF.G + link.Cost;
+                            neighborNode.F = neighborNode.G + neighborNode.H;
+                            neighborNode.Parent = nodeLowestF;
+                            int indexOpen = mOpenNodeList.IndexOf(neighborNode);
+                            if (indexOpen > -1)
+                            {
+                                if (neighborNode.F < mOpenNodeList[indexOpen].F)
+                                {
+                                    mOpenNodeList[indexOpen].G = neighborNode.G;
+                                    mOpenNodeList[indexOpen].H = neighborNode.H;
+                                    mOpenNodeList[indexOpen].F = neighborNode.F;
+                                    mOpenNodeList[indexOpen].Parent = nodeLowestF;
+                                    Debug.WriteLine("Change neigbor"+ mOpenNodeList[indexOpen].NodeDescription);
+                                }
+                            }
+                            else
+                            {
+                                mOpenNodeList.Add(neighborNode);
+                                Debug.WriteLine("Add neigbor" + neighborNode.NodeDescription);
+                            }
+                        }
+                        else 
+                        {
+                            Debug.WriteLine("Node already in Closed List:" + mClosedNodeList[indexClosed].NodeDescription);                         
+                        }
+                    }
+                }
+            }
+            return path;
+        }
+    
+       string DescribeList(List<Node> listnode,string openclose)
+        {
+            string describeList;
+            describeList = openclose+ ""; 
+            foreach (Node n in listnode) 
+            {
+               describeList+= " Node ID "+ n.NodeId;
+            }
+            return describeList;
+        }
+    }
+  
+}
