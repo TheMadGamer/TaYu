@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour {
     String mPlayer2Name = "Player 2";
 	
 	const int kNumSlots = 3;
-
+	const int kBoardSize = 15;
 
 	void Start () {
 		
@@ -27,10 +27,15 @@ public class GameController : MonoBehaviour {
         mBags = new List<Bag>(2);
 
 		mBoard = mBoardObject.GetComponent<Board>();
+		mBoard.Initialize(kBoardSize);
+		
         // Init shared game data. 
 		BoardController boardController = mBoard.Controller;
+		Debug.Log("board controller " + boardController.ToString());
 		
 		DominoGenerator generator = new DominoGenerator(boardController.StartPosition, typeof(Domino));
+		Debug.Log("board controller" + generator.ToString());
+		GamePlayManager.Initialize();
 		GamePlayManager.Instance.Init(generator, mBoard.Controller);
 	
 		// init draw bags
