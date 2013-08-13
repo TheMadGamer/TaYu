@@ -43,10 +43,10 @@ public class Domino : MonoBehaviour, IDomino
     public static float sTimeToTake = .25f;
 
     // graphical sprite
-    public Sprite mSprite;
-    public Sprite mOverlaySprite;
-    public Sprite mOutlineSprite;
-    public Sprite mBorderSprite;
+    public Sprite mSprite = new Sprite();
+    public Sprite mOverlaySprite = new Sprite();
+    public Sprite mOutlineSprite = new Sprite();
+    public Sprite mBorderSprite = new Sprite();
 
     float X { 
 	    get { return this.transform.position.x; }
