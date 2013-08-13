@@ -49,15 +49,15 @@ public class Domino : MonoBehaviour, IDomino
     public Sprite mBorderSprite;
 
     float X { 
-	    get { return this.transform.position.x;}
+	    get { return this.transform.position.x; }
 	    set { this.transform.position = new Vector3(value, this.transform.position.y, this.transform.position.z); }
     }
    float Y { 
-	    get { return this.transform.position.y;}
+	    get { return this.transform.position.y; }
 	    set { this.transform.position = new Vector3(this.transform.position.x, value, this.transform.position.z); }
     }
     float Z { 
-	    get { return this.transform.position.z;}
+	    get { return this.transform.position.z; }
 	    set { this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, value); }
     }	
     float RotationZ {
@@ -128,16 +128,14 @@ public class Domino : MonoBehaviour, IDomino
 
     }
 
-    public Domino(int label, WaterExit[] exits, int startPosition)
-        : base()
+    public void Initialize(int label, WaterExit[] exits, int startPosition)
     {
         mController = new DominoController(label, exits, startPosition);
         mController.Parent = this;
-    
     }
 
 
-    public Domino(Domino domino) 
+    public void Initialize(Domino domino) 
     {
         mController = new DominoController(domino.Controller);
         mController.Parent = this;
