@@ -1,5 +1,7 @@
 ﻿#region Using
 
+using UnityEngine;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -37,7 +39,7 @@ namespace DeltaCommon.Managers
                 }
                 else
                 {
-                    Debug.WriteLine("Should not get here, board should be initialized by now.");
+                    UnityEngine.Debug.Log("Should not get here, board should be initialized by now.");
                     return 15;
                 }
             }
@@ -161,31 +163,18 @@ namespace DeltaCommon.Managers
             }
         }
 
-#if SILVERLIGHT
-        int mGameSwitchState = 0;
-        public int GameSwitchState
-        {
-            get
-            {
-                return mGameSwitchState;
-            }
-            set
-            {
-                mGameSwitchState = value;
-            }
-        }
-#endif
         // Interface to our AI Bot
         IAIBot[] mAIBotLevel = new IAIBot[3];
 
         DominoGenerator mDominoGenerator;
         BoardController mBoardController;
+		GameObject mDominoPrefab;
 
         #endregion
         
         private GamePlayManager(){ }
 
-        public void Init(DominoGenerator generator, BoardController controller)
+        public void Init(DominoGenerator generator, BoardController controller, GameObject dominoPrefab)
         {
             mAIBotLevel[0] = new LookAheadBotWithRandom(1,3); 
             mAIBotLevel[1] = new LookAheadBot(1);
@@ -197,6 +186,7 @@ namespace DeltaCommon.Managers
             mPickNewDomino = false;
             mGameOver = false;
             mBoardController = controller;
+			mDominoPrefab = dominoPrefab;
         }
 
         #region Domino Movements Functions
@@ -419,13 +409,13 @@ namespace DeltaCommon.Managers
                     mFreeMove = false;
                     mGameOver = false;
 #if TESTALPHABETA
-                    Debug.WriteLine("Legal move found, game continues");
+                    UnityEngine.Debug.Log("Legal move found, game continues");
 #endif
                     return;
                 }
             }
             
-            Debug.WriteLine("No legal move found, game over");
+            UnityEngine.Debug.Log("No legal move found, game over");
         }
 
         
@@ -463,10 +453,10 @@ namespace DeltaCommon.Managers
                 }
                 else
                 {
-                    Debug.WriteLine("Active Domino should not have empty slot");
+                    UnityEngine.Debug.Log("Active Domino should not have empty slot");
                 }
             }
-            Debug.WriteLine("No legal move found!! WTH");
+            UnityEngine.Debug.Log("No legal move found!! WTH");
         }
 
 
@@ -490,21 +480,21 @@ namespace DeltaCommon.Managers
             if (Player1Playing)
             {
 #if TESTALPHABETA
-                Debug.WriteLine("Computer Player 1 Level {0}",mComputerPlayer1Level);
+                UnityEngine.Debug.Log("Computer Player 1 Level {0}",mComputerPlayer1Level);
 #endif
                 if (!mAIBotLevel[mComputerPlayer1Level].GetNextMove(mBoardController, computerList, enemyList, Player1Playing, out playedDomino) )
                 {
-                    Debug.WriteLine("AI Search failed");
+                    UnityEngine.Debug.Log("AI Search failed");
                 }
             }
             else
             {
 #if TESTALPHABETA
-                Debug.WriteLine("Computer Player 2 Level " + mComputerPlayer2Level);
+                UnityEngine.Debug.Log("Computer Player 2 Level " + mComputerPlayer2Level);
 #endif
                 if (!mAIBotLevel[mComputerPlayer2Level].GetNextMove(mBoardController, computerList, enemyList, Player1Playing, out playedDomino) )
                 {
-                    Debug.WriteLine("AI Search failed");
+                    UnityEngine.Debug.Log("AI Search failed");
                 }
             }
             // add the domino to the board
@@ -550,7 +540,7 @@ namespace DeltaCommon.Managers
             mBoardController.PopUndo(domino);
         }
 
-        public IDomino GetNextDomino()
+        public GameObject GetNextDomino()
         {
             return mDominoGenerator.GetNextDomino();
         }
@@ -571,7 +561,7 @@ namespace DeltaCommon.Managers
         }
         #endregion
 
-        public IDomino CreateDomino(int labelId)
+        public GameObject CreateDomino(int labelId)
         {
             return mDominoGenerator.CreateDomino(labelId);
         }

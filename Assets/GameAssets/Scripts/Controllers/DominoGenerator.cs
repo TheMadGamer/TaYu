@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
+using DeltaCommon.Entities;
 using DeltaCommon.Managers;
 
  public class DominoGenerator {
 	// Domino prefab.
-	public GameObject domino;
+	public GameObject mDomino;
 
     // this should be hidden, accessible via functions
     int[] mRandomLabelArray;
@@ -25,55 +26,27 @@ using DeltaCommon.Managers;
 
     // private
     static System.Random sRandomGenerator;
-
-    Type mGeneratedType;
-
+	
     /// <summary>
-    /// Generates a domino using system reflection
+    /// Generates a game object with a domino
     /// </summary>
-    /// <param name="labelId"></param>
-    /// <returns></returns>
-    public Domino GetNextDomino()
+    public GameObject GetNextDomino()
     {
         int label = GetNextLabel();
-
-        /*ConstructorInfo[] cInfo = mGeneratedType.GetConstructors();
-
-        Object[] constructorParams = new Object[3];
-        constructorParams[0] = label;
-        constructorParams[1] = kWaterExitDominoDatas[label];
-        constructorParams[2] = mStartPosition;
-		 
-        return cInfo[0].Invoke(constructorParams) as IDomino;
-		 */
-		Domino d = GameObject.Instantiate(domino);
-		d.Initialize(label, kWaterExitDominoDatas[label], mStartPosition);
-		
-        //return new Domino(label, kWaterExitDominoDatas[label], mStartPosition );
+		GameObject d = (GameObject)GameObject.Instantiate(mDomino);
+		d.GetComponent<Domino>().Initialize(label, kWaterExitDominoDatas[label], mStartPosition);
+		return d;
     }
 
     /// <summary>
-    /// Generates a domino using system reflection
+    /// Generates game object with a domino
     /// </summary>
-    /// <param name="labelId"></param>
-    /// <returns></returns>
-    public Domino CreateDomino(int labelId)
+    public GameObject CreateDomino(int labelId)
     {
-        /*ConstructorInfo[] cInfo = mGeneratedType.GetConstructors();
-
-        Object[] constructorParams = new Object[3];
-        constructorParams[0] = labelId;
-        constructorParams[1] = kWaterExitDominoDatas[labelId];
-        constructorParams[2] = mStartPosition;
-
-        return cInfo[0].Invoke(constructorParams) as IDomino;
-		 */
-		
-		Domino d = GameObject.Instantiate(domino);
-		d.Initialize(labelId, kWaterExitDominoDatas[labelId], mStartPosition);
-		
-        //return new Domino(labelId, kWaterExitDominoDatas[labelId], mStartPosition);
-    }
+		GameObject d = (GameObject)GameObject.Instantiate(mDomino);
+		d.GetComponent<Domino>().Initialize(labelId, kWaterExitDominoDatas[labelId], mStartPosition);
+		return d;
+	}
 
     public int CountDominoPlayed
     {
@@ -90,9 +63,9 @@ using DeltaCommon.Managers;
     /// <summary>
     /// Initializes common sprite data
     /// </summary>
-    public DominoGenerator(int startPosition, Type ctorType)
+    public DominoGenerator(int startPosition, GameObject domino)
     {
-        mGeneratedType = ctorType;
+		mDomino = domino;
         mStartPosition = startPosition;
 
         InitializeLabelArray();
@@ -310,9 +283,9 @@ using DeltaCommon.Managers;
     {
         int mLabel = 0;
 #if DEBUG
-        sRandomGenerator = new Random(0);
+        sRandomGenerator = new System.Random(0);
 #else
-        sRandomGenerator = new Random();
+        sRandomGenerator = new System.Random();
 #endif
         mRandomLabelArray = new int[kNumDominoTypes * kNumberDominoSet];
         mRandomLabelArrayIndex = 0;

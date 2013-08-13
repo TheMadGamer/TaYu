@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
 	
 	public GameObject mBoardObject;
     Board mBoard;
+	public GameObject mDominoObject;
 	Domino mDomino;
 	List<Domino> mDominos = new List<Domino>();
     List<Bag> mBags;
@@ -33,10 +34,10 @@ public class GameController : MonoBehaviour {
 		BoardController boardController = mBoard.Controller;
 		Debug.Log("board controller " + boardController.ToString());
 		
-		DominoGenerator generator = new DominoGenerator(boardController.StartPosition, typeof(Domino));
+		DominoGenerator generator = new DominoGenerator(boardController.StartPosition, mDominoObject);
 		Debug.Log("board controller" + generator.ToString());
 		GamePlayManager.Initialize();
-		GamePlayManager.Instance.Init(generator, mBoard.Controller);
+		GamePlayManager.Instance.Init(generator, mBoard.Controller, mDominoObject);
 	
 		// init draw bags
         {
@@ -44,9 +45,10 @@ public class GameController : MonoBehaviour {
 
             for (int i = 0; i < kNumSlots; i++)
             {
-                Domino domino = GamePlayManager.Instance.GetNextDomino() as Domino;
-                domino.EnableGraphics(mBoard.Controller.Size);
-                bag.AddDomino(domino);
+                GameObject gameObject = GamePlayManager.Instance.GetNextDomino();
+				Domino d = gameObject.GetComponent<Domino>();
+                d.EnableGraphics(mBoard.Controller.Size);
+                bag.AddDomino(d);
             }
             mBags.Add(bag);
         }
@@ -56,14 +58,12 @@ public class GameController : MonoBehaviour {
 
             for (int i = 0; i < kNumSlots; i++)
             {
-                Domino domino = GamePlayManager.Instance.GetNextDomino() as Domino;
+                GameObject gameObject = GamePlayManager.Instance.GetNextDomino();
+				Domino d = gameObject.GetComponent<Domino>();
 
-                //Column parameter set in bag.AddDomino.Remove following line
-                // domino.Controller.Column = -mBoardController.Size/2 + 1;
-
-                domino.EnableGraphics(mBoard.Controller.Size);
-                domino.UpdateDominoLocation(mBoard.Controller.Size);
-                bag.AddDomino(domino);
+                d.EnableGraphics(mBoard.Controller.Size);
+                d.UpdateDominoLocation(mBoard.Controller.Size);
+                bag.AddDomino(d);
             }
             mBags.Add(bag);
         }
