@@ -1,6 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GameAssets/Scripts/Controllers/GameController.cs">
+    <Files>
+      <File FileName="Assets/GameAssets/Scripts/Controllers/GameController.cs" Line="221" Column="17" />
+      <File FileName="Assets/GameAssets/Scripts/Controllers/Domino.cs" Line="49" Column="48" />
+      <File FileName="Assets/GameAssets/Scripts/Shrared/Managers/GamePlayManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/GameAssets/Scripts/Shrared/Managers/IAIManager.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
