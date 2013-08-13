@@ -104,6 +104,7 @@ public class GameController : MonoBehaviour {
 
 	void Update () {
 		Vector2 inputPos = Input.mousePosition;
+		inputPos = new Vector2(inputPos.x - Screen.width / 2.0f, inputPos.y - Screen.height / 2.0f);
 		if (Input.GetMouseButtonDown(0)) {
 			MoveDominoToPoint(mActiveDomino, inputPos);
 		} else if (Input.GetMouseButton(0)) {
