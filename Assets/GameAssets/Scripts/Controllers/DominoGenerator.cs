@@ -30,22 +30,22 @@ using DeltaCommon.Managers;
     /// <summary>
     /// Generates a game object with a domino
     /// </summary>
-    public GameObject GetNextDomino()
+    public Domino GetNextDomino()
     {
         int label = GetNextLabel();
 		GameObject d = (GameObject)GameObject.Instantiate(mDomino);
 		d.GetComponent<Domino>().Initialize(label, kWaterExitDominoDatas[label], mStartPosition);
-		return d;
+		return d.GetComponent<Domino>();
     }
 
     /// <summary>
     /// Generates game object with a domino
     /// </summary>
-    public GameObject CreateDomino(int labelId)
+    public Domino CreateDomino(int labelId)
     {
 		GameObject d = (GameObject)GameObject.Instantiate(mDomino);
 		d.GetComponent<Domino>().Initialize(labelId, kWaterExitDominoDatas[labelId], mStartPosition);
-		return d;
+		return d.GetComponent<Domino>();
 	}
 
     public int CountDominoPlayed

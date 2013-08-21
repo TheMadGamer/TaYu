@@ -540,7 +540,7 @@ namespace DeltaCommon.Managers
             mBoardController.PopUndo(domino);
         }
 
-        public GameObject GetNextDomino()
+        public Domino GetNextDomino()
         {
             return mDominoGenerator.GetNextDomino();
         }
@@ -561,7 +561,7 @@ namespace DeltaCommon.Managers
         }
         #endregion
 
-        public GameObject CreateDomino(int labelId)
+        public Domino CreateDomino(int labelId)
         {
             return mDominoGenerator.CreateDomino(labelId);
         }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using DeltaCommon.Component;
 using DeltaCommon.Entities;
 using DeltaCommon.Managers;
+using DeltaCommon.Events;
 
 public class GameController : MonoBehaviour {
 	
@@ -16,14 +17,17 @@ public class GameController : MonoBehaviour {
 	List<Domino> mDominos = new List<Domino>();
     List<Bag> mBags;
 	
-	GameObject mActiveDomino = null;
+	Domino mActiveDomino = null;
 	
     String mPlayer1Name = "Player 1";
     String mPlayer2Name = "Player 2";
 	
 	const int kNumSlots = 3;
 	const int kBoardSize = 15;
-
+	const double kWaitingTime = 0.5;
+	
+	float mTimeStamp;
+	
 	void Start () {
 		
         GameEventManager.Initialize();
@@ -47,8 +51,7 @@ public class GameController : MonoBehaviour {
 
             for (int i = 0; i < kNumSlots; i++)
             {
-                GameObject gameObject = GamePlayManager.Instance.GetNextDomino();
-				Domino d = gameObject.GetComponent<Domino>();
+                Domino d = GamePlayManager.Instance.GetNextDomino();				
                 d.EnableGraphics(mBoard.Controller.Size);
                 bag.AddDomino(d);
             }
@@ -60,8 +63,7 @@ public class GameController : MonoBehaviour {
 
             for (int i = 0; i < kNumSlots; i++)
             {
-                GameObject gameObject = GamePlayManager.Instance.GetNextDomino();
-				Domino d = gameObject.GetComponent<Domino>();
+				Domino d = GamePlayManager.Instance.GetNextDomino();
 
                 d.EnableGraphics(mBoard.Controller.Size);
                 d.UpdateDominoLocation(mBoard.Controller.Size);
@@ -70,11 +72,10 @@ public class GameController : MonoBehaviour {
             mBags.Add(bag);
         }
 
-	    mActiveDomino = GamePlayManager.Instance.GetNextDomino();
-		Domino activeController = mActiveDomino.GetComponent<Domino>();
-		mDominos.Add(activeController);
-        activeController.EnableGraphics(mBoard.Controller.Size);
-        activeController.SetHighlight(HighLightMode.Active);
+	    mActiveDomino = GamePlayManager.Instance.GetNextDomino().GetComponent<Domino>();
+		mDominos.Add(mActiveDomino);
+        mActiveDomino.EnableGraphics(mBoard.Controller.Size);
+        mActiveDomino.SetHighlight(HighLightMode.Active);
 	}
 	
 	void InitializeDisplay() {
@@ -103,16 +104,192 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Update () {
+
+		if (GamePlayManager.Instance.GameOver) {
+			Debug.Log("Restart game?");
+		} 
+		
+		GameEventManager.Instance.Activity();
+		
+		if (GamePlayManager.Instance.Player1Playing && !GamePlayManager.Instance.Player1Computer) {
+			
+		} else if ((!GamePlayManager.Instance.Player1Playing) && !GamePlayManager.Instance.Player2Computer) {
+		
+		}
+		
+		// Either the user or the computer has added a new Domino
+        if (GamePlayManager.Instance.PickNewDomino && ((Time.time - mTimeStamp) > kWaitingTime)) {
+
+	        GameObject dominoObject = null;
+	
+	        //draw into previous bag
+	        // before the change over
+	        Bag bag = GetActiveBag();
+	        mActiveDomino = null;
+	        if (bag.HasEmptySlot())
+	        {
+	            Domino domino = GamePlayManager.Instance.GetNextDomino();
+				
+	            domino.EnableGraphics(mBoard.Controller.Size);
+	            bag.AddDomino(domino);
+	            //check there's a legal move in that bag
+	            List<IDomino> cloneDominoes = CloneBag(bag, mDominoObject);
+	            GamePlayManager.Instance.CheckForGameOver(cloneDominoes);
+	        }
+	        else
+	        {
+	            Debug.Log("First move, no draw");
+	        }
+	
+	        GamePlayManager.Instance.DoneWithDraw();
+	        
+	        // now change players
+	        ChangePlayer();
+	
+	         
+	        // check if the game is over
+	        // highlight for visibility
+	        //mDomino.SetHighlight(Domino.HighLightMode.Active);
+	        GamePlayManager.Instance.GameOnHold = false;
+	
+	        if (GamePlayManager.Instance.GameOver)
+	        {
+				Debug.Log("Game over");
+	            // move this back to the game screen - graphics belong in the screen
+	            // not the game play logic
+//	            mDisplayStatus.Alpha = 1;
+//	            mDisplayStatus.DisplayText = "No legal position to play any tiles.  Game Over.";
+//	            mDisplayStatus.AlphaRate = -0.5f;
+	        }
+	
+	        mTimeStamp = Time.time;
+	    }
+
+	    //Computer's Turn
+	    if (!GamePlayManager.Instance.GameOnHold
+	        && !GamePlayManager.Instance.HumanPlayer
+	        && !GamePlayManager.Instance.GameOver
+	        && ((Time.time - mTimeStamp) > kWaitingTime))
+	    {
+	        ComputerMove();
+	    }
+	}
+		
+	void HandleMouseInput() {
+		// Center input position vector.
 		Vector2 inputPos = Input.mousePosition;
 		inputPos = new Vector2(inputPos.x - Screen.width / 2.0f, inputPos.y - Screen.height / 2.0f);
+				
 		if (Input.GetMouseButtonDown(0)) {
+			// Selection.
+			
 			MoveDominoToPoint(mActiveDomino, inputPos);
 		} else if (Input.GetMouseButton(0)) {
 			MoveDominoToPoint(mActiveDomino, inputPos);			
 		}
 	}
-	 
-	///<summary>
+	
+	List<Domino> getDominoList(List<GameObject> objectList) {
+		List<Domino> dominoList = new List<Domino>();
+		foreach(GameObject gameObject in objectList) {
+			dominoList.Add(gameObject.GetComponent<Domino>());
+		}
+		return dominoList;
+	}
+	
+    void ComputerMove()
+    { 		
+		Debug.Log("Computer move");
+		if (!GamePlayManager.Instance.FirstDominoSet)           
+        {
+            Bag ennemyBag = (GamePlayManager.Instance.Player1Playing) ? mBags[1] : mBags[0];
+            List<IDomino> reducecomputerPlayingBag = new List<IDomino>();
+            reducecomputerPlayingBag.Add(mActiveDomino);
+            mActiveDomino = GamePlayManager.Instance.ComputersPlay(reducecomputerPlayingBag, ennemyBag.GetDominoes()) as Domino;
+        }
+        else
+        {
+            Bag ennemyBag = (GamePlayManager.Instance.Player1Playing) ? mBags[1] : mBags[0];
+            Bag computerPlayingBag = (GamePlayManager.Instance.Player1Playing) ? mBags[0] : mBags[1];
+            mActiveDomino = GamePlayManager.Instance.ComputersPlay(computerPlayingBag.GetDominoes(), ennemyBag.GetDominoes()) as Domino;
+            computerPlayingBag.RemoveDomino(mActiveDomino);
+        }
+
+        
+        mTimeStamp = Time.time;
+
+        // updates the graphical position of the domino
+        mActiveDomino.UpdateDominoLocation(mBoard.Controller.Size);
+
+        // transfer control of domino to screen 
+        mDominos.Add(mActiveDomino);
+
+        RaiseFXEventsAfterPlacedDomino(mActiveDomino);
+
+        mActiveDomino = null;
+
+        DimBagDominoes(GamePlayManager.Instance.Player1Computer ? 0 : 1);
+
+    }
+	
+	private void DimBagDominoes(int index) {
+		// TODO
+	}
+ 
+	private void RaiseFXEventsAfterPlacedDomino(Domino domino)
+    {
+		// TODO
+	}	
+	
+    /// <summary>
+    /// This tries to place a domino.  If not legal, a meassage is thrown up.
+    /// </summary>
+    /// <returns></returns>
+    protected bool TryToPlaceDomino()
+    {
+        bool isLegal = GamePlayManager.Instance.IsLegalMove(mActiveDomino.Controller);
+
+        if (isLegal)
+        {
+            GamePlayManager.Instance.PlaceDomino(mActiveDomino.Controller);
+            RaiseFXEventsAfterPlacedDomino(mActiveDomino);
+            mActiveDomino = null;
+        }
+        else
+        {
+			// TODO
+//            mDisplayStatus.Alpha = 1;
+//            mDisplayStatus.AlphaRate = -0.5f;
+//            mDisplayStatus.DisplayText = "Not a legal move.";
+            GameEventManager.Instance.RaiseEvent(new GameEvent(
+                GameEvent.GameEventType.FAIL_PLACE,
+                mActiveDomino,
+                GamePlayManager.Instance.Player1Playing ? 0 : 1));
+        }
+
+        // then update this
+        mTimeStamp = Time.time;
+        return isLegal;
+    }
+	
+    private static List<IDomino> CloneBag(Bag bag, GameObject dominoPrefab)
+    {
+        List<IDomino> cloneDominoes = new List<IDomino>();
+        List<IDomino> bagDominoes = bag.GetDominoes();
+        foreach (Domino cloneDomino in bagDominoes)
+        {
+            if (cloneDomino != null)
+            {
+				// Generate a game object, add component. This bag needs to be properly removed.
+				GameObject dominoObject = GameObject.Instantiate(dominoPrefab) as GameObject;
+				dominoObject.GetComponent<Domino>().Initialize(cloneDomino);
+                cloneDominoes.Add(dominoObject.GetComponent<Domino>());
+            }
+        }
+        return cloneDominoes;
+    }
+	
+///<summary>
     /// Change player when one player's turn is over.
     ///</summary>
     void ChangePlayer()
@@ -216,7 +393,7 @@ public class GameController : MonoBehaviour {
     /// <param name="domino"></param>
     /// <param name="mousePositionX"></param>
     /// <param name="mousePosittionY"></param>    
-    void MoveDominoToPoint(GameObject dominoObject, Vector2 mousePoint)
+    void MoveDominoToPoint(Domino domino, Vector2 mousePoint)
     {
 		Debug.Log("Move domino to point " + mousePoint.ToString());
         int row;
@@ -236,9 +413,7 @@ public class GameController : MonoBehaviour {
         }
 
 		// Note ACL there was some layer logic here.
-		
-		Domino domino = dominoObject.GetComponent<Domino>();
-		
+				
         // this will move on the board
         if (LocationIsInBoard(row, column, domino.Controller.IsHorizontal()))
         {

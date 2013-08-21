@@ -29,12 +29,12 @@ class Instructions {
 
 // Abstraction around game object so that the FRB/XBox port isnt' that bad.
 public class Sprite {
+	// TODO - point this at a component.
+	
 	// ACL todo - change the grpahical object's alpha
 	public float Alpha { get; set; }
  	public bool Visible { get; set; }
-	public float AlphaRate { get; set; }
-    public  float ScaleX {get; set;}
-    public  float ScaleY {get; set;}	
+	public float AlphaRate { get; set; }	
 }
 
 public class Domino : MonoBehaviour, IDomino
@@ -144,18 +144,9 @@ public class Domino : MonoBehaviour, IDomino
     private void InitializeOverlaySprites()
     {
 
-        mOutlineSprite.ScaleX = mSprite.ScaleX * 1.01f;
-        mOutlineSprite.ScaleY = mSprite.ScaleY * 1.11f;
         mOutlineSprite.Visible = true;
         mOutlineSprite.Alpha = 0.5f;
         mOutlineSprite.AlphaRate = 0.5f;
-
-        mOverlaySprite.ScaleX = mSprite.ScaleX * 1.01f;
-        mOverlaySprite.ScaleY = mSprite.ScaleY * 1.11f;            
-
-        mBorderSprite.ScaleX = mSprite.ScaleX;
-        mBorderSprite.ScaleY = mSprite.ScaleY * 1.1f;
-
         mBorderSprite.Alpha = 0.75f;
 
     }
@@ -165,24 +156,6 @@ public class Domino : MonoBehaviour, IDomino
     /// </summary>
     public void EnableGraphics(int boardSize)
     {
-        		
-	// TODO ACL
-        //String imageName = String.Format("content/Tile{0}", mController.Label); 
-        //mSprite = SpriteManager.AddSprite(imageName);
-
-        mSprite.ScaleY = 0.5f * Square.kPixelSize;
-        mSprite.ScaleX = 3.0f * mSprite.ScaleY;
-        if (boardSize % 2 == 0)
-        {
-            X = mSprite.ScaleY;
-            Y = mSprite.ScaleY;
-        }
-        else
-        {
-            X = 0;
-            Y = 0;
-        }
-
         mSprite.AlphaRate = 0.5f;
 
 #if DEBUG
