@@ -12,10 +12,14 @@ using DeltaCommon.Component;
 class InstructionManager {
 	public static void MoveToAccurate(Domino d, float x, float y, float z, float time) {
 		// ACL
+		// TODO animate this ACL
+		d.gameObject.transform.position = new Vector3(x, y, z);
 	}
 	
 	public static void RotateToAccurate(Domino d, float rx, float ry, float rz, float time){
-		
+		// TODO animate this ACL.
+		UnityEngine.Debug.Log("Rotate to accurate " + rz.ToString());
+		d.gameObject.transform.Rotate(rx, ry, rz);
 	}
 }
 	
@@ -63,6 +67,7 @@ public class Domino : MonoBehaviour, IDomino
     float RotationZ {
 		get {return this.transform.rotation.eulerAngles.z;}
 		set {
+			UnityEngine.Debug.Log("Rotate " + value.ToString());
 			Vector3 rotation = this.transform.eulerAngles;
 			rotation.z = value;
 			this.transform.eulerAngles = rotation;
@@ -260,6 +265,8 @@ public class Domino : MonoBehaviour, IDomino
     /// <returns></returns>
     public bool Contains(float mouseX, float mouseY)
     {
+		//UnityEngine.Debug.Log("Contains?" + mouseX.ToString() + " " + mouseY.ToString());
+		//UnityEngine.Debug.Log(this.X.ToString() + " " + this.Y.ToString());
         if (mController.IsHorizontal()) 
         {
             if ((Math.Abs(mouseX - this.X) < 1.5f*Square.kPixelSize )

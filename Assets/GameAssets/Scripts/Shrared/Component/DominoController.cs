@@ -26,7 +26,6 @@ namespace DeltaCommon.Component
         public int Label
         {
             get { return mLabel; }
-
         }
 
 

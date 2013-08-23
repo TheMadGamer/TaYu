@@ -112,22 +112,23 @@ public class GameController : MonoBehaviour {
 		GameEventManager.Instance.Activity();
 		
 		if (GamePlayManager.Instance.Player1Playing && !GamePlayManager.Instance.Player1Computer) {
-			
+			//Debug.Log("Player 1 move");
+			HandleMouseInput();
 		} else if ((!GamePlayManager.Instance.Player1Playing) && !GamePlayManager.Instance.Player2Computer) {
-		
+			//Debug.Log("Player 2 move");
+			HandleMouseInput();
 		}
 		
 		// Either the user or the computer has added a new Domino
         if (GamePlayManager.Instance.PickNewDomino && ((Time.time - mTimeStamp) > kWaitingTime)) {
 
-	        GameObject dominoObject = null;
-	
 	        //draw into previous bag
 	        // before the change over
 	        Bag bag = GetActiveBag();
 	        mActiveDomino = null;
 	        if (bag.HasEmptySlot())
 	        {
+				Debug.Log("Add new domino");
 	            Domino domino = GamePlayManager.Instance.GetNextDomino();
 				
 	            domino.EnableGraphics(mBoard.Controller.Size);
@@ -142,10 +143,7 @@ public class GameController : MonoBehaviour {
 	        }
 	
 	        GamePlayManager.Instance.DoneWithDraw();
-	        
-	        // now change players
-	        ChangePlayer();
-	
+			ChangePlayer();
 	         
 	        // check if the game is over
 	        // highlight for visibility
@@ -182,11 +180,76 @@ public class GameController : MonoBehaviour {
 				
 		if (Input.GetMouseButtonDown(0)) {
 			// Selection.
-			
-			MoveDominoToPoint(mActiveDomino, inputPos);
+			HandleDown(inputPos);
 		} else if (Input.GetMouseButton(0)) {
-			MoveDominoToPoint(mActiveDomino, inputPos);			
+			HandleMove(inputPos);
+		} else if (Input.GetMouseButtonUp(0)) {
+			HandleUp(inputPos);
 		}
+		
+		// TODO: Handle rotation;
+	}
+	
+	void HandleDown(Vector2 mousePoint){
+        // Clicked inside board and there is an active domino.
+        Debug.Log("Handle down");
+		
+		if (mBags[0].Contains(mousePoint)) {
+			Debug.Log("bag 0 contains");
+		}
+
+		if (mBags[1].Contains(mousePoint)) {
+			Debug.Log("bag 1 contains");
+		}
+		
+		if (mBoard.Contains(mousePoint) && (mActiveDomino != null))
+        {
+            Debug.Log("Inside Board Limits and Active Domino - begin dragging");
+            if (mActiveDomino.Contains(mousePoint))
+            {
+                Debug.Log("Board contains mouse point");
+//                mIsDragging = true;
+            }
+        }
+        else if (mActiveDomino == null && GamePlayManager.Instance.Player1Playing && mBags[0].Contains(mousePoint))
+        {
+            Debug.Log("Inside Bag Limits and Active Domino - begin dragging");
+            mActiveDomino = mBags[0].GetSelection(mousePoint);
+            mBags[0].RemoveDomino(mActiveDomino);
+            mDominos.Add(mActiveDomino);
+//            mIsDragging = true;
+            mActiveDomino.SetHighlight(HighLightMode.Active);
+        }
+        else if (mActiveDomino == null && (!GamePlayManager.Instance.Player1Playing) && mBags[1].Contains(mousePoint))
+        {
+            Debug.Log("Inside Bag Limits and Active Domino - begin dragging");
+            mActiveDomino = mBags[1].GetSelection(mousePoint);
+            mBags[1].RemoveDomino(mActiveDomino);
+            mDominos.Add(mActiveDomino);
+//            mIsDragging = true;
+            mActiveDomino.SetHighlight(HighLightMode.Active);
+
+        }	
+	}
+	
+	void HandleMove(Vector2 mousePosition) {
+        if (mActiveDomino != null)
+        {
+            MoveDominoToPoint(mActiveDomino, mousePosition);
+        }	
+	}
+	
+	void HandleUp(Vector2 mousePosition){
+		if (mActiveDomino != null) {
+	        if (!LocationIsInBoard(mActiveDomino.Controller.Row, mActiveDomino.Controller.Column,
+	            mActiveDomino.Controller.IsHorizontal())) {
+	            Bag activeBag = GetActiveBag();
+	            activeBag.AddDomino(mActiveDomino);
+	
+	            // No longer active on board, set to null.
+	            mActiveDomino = null;
+	        }
+	    }
 	}
 	
 	List<Domino> getDominoList(List<GameObject> objectList) {
@@ -280,7 +343,8 @@ public class GameController : MonoBehaviour {
         {
             if (cloneDomino != null)
             {
-				// Generate a game object, add component. This bag needs to be properly removed.
+				// Generate a game object, add component. 
+				// TODO: This bag needs to be properly removed.
 				GameObject dominoObject = GameObject.Instantiate(dominoPrefab) as GameObject;
 				dominoObject.GetComponent<Domino>().Initialize(cloneDomino);
                 cloneDominoes.Add(dominoObject.GetComponent<Domino>());
@@ -294,6 +358,7 @@ public class GameController : MonoBehaviour {
     ///</summary>
     void ChangePlayer()
     {
+		Debug.Log("Change player");
         GamePlayManager.Instance.ChangePlayer();
 
         // this fades the active player's text alpha (dims it)
