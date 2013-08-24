@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour {
 	const int kNumSlots = 3;
 	const int kBoardSize = 15;
 	const double kWaitingTime = 0.5;
+	public int FixedScreenHeight = 680; // Camera size must be 340.
 	
 	float mTimeStamp;
 	
@@ -176,8 +177,12 @@ public class GameController : MonoBehaviour {
 	void HandleMouseInput() {
 		// Center input position vector.
 		Vector2 inputPos = Input.mousePosition;
+		// Center
 		inputPos = new Vector2(inputPos.x - Screen.width / 2.0f, inputPos.y - Screen.height / 2.0f);
-				
+		
+		// Rescale
+		inputPos *= (float) FixedScreenHeight / Screen.height;
+		
 		if (Input.GetMouseButtonDown(0)) {
 			// Selection.
 			HandleDown(inputPos);
@@ -192,7 +197,8 @@ public class GameController : MonoBehaviour {
 	
 	void HandleDown(Vector2 mousePoint){
         // Clicked inside board and there is an active domino.
-        Debug.Log("Handle down");
+        Debug.Log("Handle down" + mousePoint.ToString());
+
 		
 		if (mBags[0].Contains(mousePoint)) {
 			Debug.Log("bag 0 contains");
