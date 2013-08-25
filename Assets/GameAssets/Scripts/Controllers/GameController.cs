@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour {
 	const int kBoardSize = 15;
 	const double kWaitingTime = 0.5;
 	public int FixedScreenHeight = 680; // Camera size must be 340.
-	
+	private GamePlayManager mGamePlayManager = GamePlayManager.Instance; // Pointer seems to dealloc'ing?
 	float mTimeStamp;
 	
 	void Start () {
@@ -197,7 +197,7 @@ public class GameController : MonoBehaviour {
 	
 	void HandleDown(Vector2 mousePoint){
         // Clicked inside board and there is an active domino.
-        Debug.Log("Handle down" + mousePoint.ToString());
+        //Debug.Log("Handle down" + mousePoint.ToString());
 
 		
 		if (mBags[0].Contains(mousePoint)) {
@@ -235,7 +235,22 @@ public class GameController : MonoBehaviour {
 //            mIsDragging = true;
             mActiveDomino.SetHighlight(HighLightMode.Active);
 
-        }	
+        } else if (mousePoint.x > 360) {
+			Debug.Log("Commit move");
+			if (mActiveDomino != null && TryToPlaceDomino()) {
+				Debug.Log("Committed move");
+				mActiveDomino = null;
+			} else {
+                if (GamePlayManager.Instance.Player1Playing)
+                {
+                    Debug.Log("Player 1 needs to make a move.");
+                }
+                else
+                {
+                    Debug.Log("Player 2 needs to make a move.");
+                }
+			}
+		}
 	}
 	
 	void HandleMove(Vector2 mousePosition) {
@@ -317,7 +332,7 @@ public class GameController : MonoBehaviour {
     protected bool TryToPlaceDomino()
     {
         bool isLegal = GamePlayManager.Instance.IsLegalMove(mActiveDomino.Controller);
-
+		Debug.Log("Legal move: " + isLegal.ToString());
         if (isLegal)
         {
             GamePlayManager.Instance.PlaceDomino(mActiveDomino.Controller);
@@ -466,7 +481,7 @@ public class GameController : MonoBehaviour {
     /// <param name="mousePosittionY"></param>    
     void MoveDominoToPoint(Domino domino, Vector2 mousePoint)
     {
-		Debug.Log("Move domino to point " + mousePoint.ToString());
+		//Debug.Log("Move domino to point " + mousePoint.ToString());
         int row;
         int column;
 

@@ -271,6 +271,7 @@ namespace DeltaCommon.Managers
 
         public bool IsLegalMove(DominoController domino)
         {
+			UnityEngine.Debug.Log("mFirst:" + mFirstDominoSet.ToString() );
             return  (!mFirstDominoSet) || mBoardController.IsLegalMove(domino);
         }
 

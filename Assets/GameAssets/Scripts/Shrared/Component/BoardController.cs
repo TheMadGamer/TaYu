@@ -689,6 +689,7 @@ namespace DeltaCommon.Component
         ///</summary>
         private bool PositionFree(DominoController domino)
         {
+			UnityEngine.Debug.DebugBreak();
             bool positionEmpty = false;
 
             if (domino.IsHorizontal() && domino.Column > 0 && domino.Column < mSize - 1)

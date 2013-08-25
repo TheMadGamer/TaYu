@@ -31,26 +31,16 @@ class Instructions {
 	}
 }
 
-// Abstraction around game object so that the FRB/XBox port isnt' that bad.
-public class Sprite {
-	// TODO - point this at a component.
-	
-	// ACL todo - change the grpahical object's alpha
-	public float Alpha { get; set; }
- 	public bool Visible { get; set; }
-	public float AlphaRate { get; set; }	
-}
-
 public class Domino : MonoBehaviour, IDomino
 {
     
     public static float sTimeToTake = .25f;
 
     // graphical sprite
-    public Sprite mSprite = new Sprite();
-    public Sprite mOverlaySprite = new Sprite();
-    public Sprite mOutlineSprite = new Sprite();
-    public Sprite mBorderSprite = new Sprite();
+    public GameObject mSpriteObject;
+    public GameObject mOverlaySpriteObject;
+    public GameObject mOutlineSpriteObject;
+    public GameObject mBorderSpriteObject;
 
     float X { 
 	    get { return this.transform.position.x; }
@@ -73,7 +63,19 @@ public class Domino : MonoBehaviour, IDomino
 			this.transform.eulerAngles = rotation;
 		}
 	}
-
+	tk2dSprite mSprite {
+		get { return this.mSpriteObject.GetComponent<tk2dSprite>(); }
+	}
+	tk2dSprite mOutlineSprite {
+		get { return this.mOutlineSpriteObject.GetComponent<tk2dSprite>(); }
+	}	
+	tk2dSprite mOverlaySprite {
+		get { return this.mOverlaySpriteObject.GetComponent<tk2dSprite>(); }
+	}	
+	tk2dSprite mBorderSprite {
+		get { return this.mBorderSprite.GetComponent<tk2dSprite>(); }
+	}
+	
     DominoController mController;
     public DominoController Controller { get { return mController; } }
 
@@ -90,47 +92,7 @@ public class Domino : MonoBehaviour, IDomino
 
         mHighlight = mode;
 
-        switch (mHighlight)
-        {
-            case HighLightMode.Active:
-                
-                mOutlineSprite.Visible = true;
-                mOutlineSprite.Alpha = 0.5f;
-                mOutlineSprite.AlphaRate = 0.5f;                    
-                break;
-
-            case HighLightMode.FinishedPlacement:
-
-                if(mOutlineSprite.Visible)
-                {
-                    mOutlineSprite.AlphaRate = -0.75f;
-                }
-
-                mOverlaySprite.Visible = true;
-                mOverlaySprite.Alpha = 0.5f;
-                mOverlaySprite.AlphaRate = -0.5f;
-
-                break;
-
-            case HighLightMode.None:
-
-                mOverlaySprite.Visible = false;
-                mOutlineSprite.Visible = false;
-		
-		// TODOD ACL
-                //mOutlineSprite.ColorOperation = ColorOperation.Modulate;
-                //mOutlineSprite.Red = 1;
-                //mOutlineSprite.Green = 1;
-                //mOutlineSprite.Blue = 1;
-
-                //mSprite.ColorOperation = ColorOperation.Modulate;
-                //mSprite.Red = 1;
-                //mSprite.Green = 1;
-                //mSprite.Blue = 1;
-                
-                break;
-        }
-
+		// TODO - reenable this.
     }
 
     public void Initialize(int label, WaterExit[] exits, int startPosition)
@@ -149,10 +111,10 @@ public class Domino : MonoBehaviour, IDomino
     private void InitializeOverlaySprites()
     {
 
-        mOutlineSprite.Visible = true;
-        mOutlineSprite.Alpha = 0.5f;
-        mOutlineSprite.AlphaRate = 0.5f;
-        mBorderSprite.Alpha = 0.75f;
+        mOutlineSprite.enabled = true;
+//        mOutlineSprite.Alpha = 0.5f;
+//        mOutlineSprite.AlphaRate = 0.5f;
+//        mBorderSprite.Alpha = 0.75f;
 
     }
 
@@ -161,12 +123,12 @@ public class Domino : MonoBehaviour, IDomino
     /// </summary>
     public void EnableGraphics(int boardSize)
     {
-        mSprite.AlphaRate = 0.5f;
+//        mSprite.AlphaRate = 0.5f;
 
 #if DEBUG
-        mSprite.Alpha = 0.5f;
+//        mSprite.Alpha = 0.5f;
 #else
-        mSprite.Alpha = 0;
+//        mSprite.Alpha = 0;
 #endif
         InitializeOverlaySprites();
 
@@ -292,12 +254,12 @@ public class Domino : MonoBehaviour, IDomino
     #region GRAPHICS
     public void SetDominoAlpha(float alpha)
     {
-        mSprite.Alpha=alpha;
+//        mSprite.Alpha=alpha;
     }
  
     public void SetDominoAlphaRate(float alphaRate)
     {
-        mSprite.AlphaRate = alphaRate;
+//        mSprite.AlphaRate = alphaRate;
     }
  
     //when a domino is created, its transparency must be gradually decreased until alpha=0.5    
@@ -321,19 +283,19 @@ public class Domino : MonoBehaviour, IDomino
         }
         else if (mHighlight == HighLightMode.FinishedPlacement)
         {
-            if (mOutlineSprite.Alpha < 0.001f)
+//            if (mOutlineSprite.Alpha < 0.001f)
             {
                 //SpriteManager.RemoveSprite(mOutlineSprite);
-                mOutlineSprite.Visible = false;
-                mOutlineSprite.AlphaRate = 0;
+//                mOutlineSprite.enabled = false;
+  //              mOutlineSprite.AlphaRate = 0;
             }
         
             //if overlay is not really visible, remove
-            if (mOverlaySprite.Alpha < 0.001f)
+  //          if (mOverlaySprite.Alpha < 0.001f)
             {
-                mHighlight = HighLightMode.None;
-                mOverlaySprite.Visible = false;
-                mOverlaySprite.AlphaRate = 0;
+    //            mHighlight = HighLightMode.None;
+      //          mOverlaySprite.enabled = false;
+        //        mOverlaySprite.AlphaRate = 0;
             }
 
 /*  TODO ACL           mOutlineSprite.ColorOperation = ColorOperation.Modulate;

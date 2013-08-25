@@ -34,8 +34,11 @@ using DeltaCommon.Managers;
     {
         int label = GetNextLabel();
 		GameObject d = (GameObject)GameObject.Instantiate(mDomino);
-		d.GetComponent<Domino>().Initialize(label, kWaterExitDominoDatas[label], mStartPosition);
-		return d.GetComponent<Domino>();
+		Domino domino = d.GetComponent<Domino>();
+		domino.Initialize(label, kWaterExitDominoDatas[label], mStartPosition);
+		tk2dSprite sprite = domino.mSpriteObject.GetComponent<tk2dSprite>();
+		sprite.SetSprite("Tile" + label.ToString());
+		return domino;
     }
 
     /// <summary>
@@ -44,8 +47,11 @@ using DeltaCommon.Managers;
     public Domino CreateDomino(int labelId)
     {
 		GameObject d = (GameObject)GameObject.Instantiate(mDomino);
-		d.GetComponent<Domino>().Initialize(labelId, kWaterExitDominoDatas[labelId], mStartPosition);
-		return d.GetComponent<Domino>();
+		Domino domino = d.GetComponent<Domino>();
+		domino.Initialize(labelId, kWaterExitDominoDatas[labelId], mStartPosition);
+		tk2dSprite sprite = domino.mSpriteObject.GetComponent<tk2dSprite>();
+		sprite.SetSprite("Tile" + labelId.ToString());
+		return domino;
 	}
 
     public int CountDominoPlayed
