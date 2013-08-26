@@ -251,6 +251,11 @@ public class GameController : MonoBehaviour {
                     Debug.Log("Player 2 needs to make a move.");
                 }
 			}
+		} else if (mousePoint.y < -300) {
+			Debug.Log("Rotate");
+			if (mActiveDomino != null) {
+				mActiveDomino.GetComponent<Domino>().MoveClockWise();
+			}
 		}
 	}
 	
