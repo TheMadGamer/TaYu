@@ -137,6 +137,7 @@ public class GameController : MonoBehaviour {
 	            //check there's a legal move in that bag
 	            List<IDomino> cloneDominoes = CloneBag(bag, mDominoObject);
 	            GamePlayManager.Instance.CheckForGameOver(cloneDominoes);
+				DestroyBag(cloneDominoes);
 	        }
 	        else
 	        {
@@ -358,20 +359,38 @@ public class GameController : MonoBehaviour {
 	
     private static List<IDomino> CloneBag(Bag bag, GameObject dominoPrefab)
     {
+		Debug.Log("Cloning bag");
         List<IDomino> cloneDominoes = new List<IDomino>();
         List<IDomino> bagDominoes = bag.GetDominoes();
         foreach (Domino cloneDomino in bagDominoes)
         {
             if (cloneDomino != null)
             {
+				Debug.Log("Cloning domino");
 				// Generate a game object, add component. 
 				// TODO: This bag needs to be properly removed.
 				GameObject dominoObject = GameObject.Instantiate(dominoPrefab) as GameObject;
-				dominoObject.GetComponent<Domino>().Initialize(cloneDomino);
+				Domino domino = dominoObject.GetComponent<Domino>();
+				domino.Initialize(cloneDomino);
+				domino.DisableGraphics();
+				
                 cloneDominoes.Add(dominoObject.GetComponent<Domino>());
             }
         }
         return cloneDominoes;
+    }
+	
+	private void DestroyBag(List<IDomino> bagDominoes)
+    {
+		Debug.Log("Destroying bag");
+        foreach (Domino cloneDomino in bagDominoes)
+        {
+            if (cloneDomino != null)
+            {
+				Debug.Log("Destroying domino");
+				GameObject.Destroy(cloneDomino.gameObject);
+            }
+        }
     }
 	
 ///<summary>

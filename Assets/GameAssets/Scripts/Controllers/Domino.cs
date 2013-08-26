@@ -134,6 +134,21 @@ public class Domino : MonoBehaviour, IDomino
 
         SetHighlight(HighLightMode.None);
     }
+	
+	public void DisableGraphics() {
+		if (mSpriteObject) {
+			mSprite.enabled = false;
+		}
+		if (mOutlineSpriteObject) {
+			mOutlineSprite.enabled = false;
+		}
+		if (mOverlaySpriteObject) {
+			mOverlaySprite.enabled = false;
+		}
+		if (mBorderSpriteObject) {
+			mBorderSprite.enabled = false;
+		}
+	}
 
     public void MoveWest()
     {
