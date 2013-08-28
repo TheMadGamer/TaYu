@@ -57,7 +57,7 @@ public class Domino : MonoBehaviour, IDomino
     float RotationZ {
 		get {return this.transform.rotation.eulerAngles.z;}
 		set {
-			UnityEngine.Debug.Log("Rotate " + value.ToString());
+			//UnityEngine.Debug.Log("Rotate " + value.ToString());
 			Vector3 rotation = this.transform.eulerAngles;
 			rotation.z = value;
 			this.transform.eulerAngles = rotation;

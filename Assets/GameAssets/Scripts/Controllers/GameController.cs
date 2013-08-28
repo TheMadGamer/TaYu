@@ -28,6 +28,16 @@ public class GameController : MonoBehaviour {
 	public int FixedScreenHeight = 680; // Camera size must be 340.
 	private GamePlayManager mGamePlayManager = GamePlayManager.Instance; // Pointer seems to dealloc'ing?
 	float mTimeStamp;
+	public GameObject InfoTextObject;
+	
+	String InfoText {
+		get { return InfoTextObject.GetComponent<tk2dTextMesh>().text; }
+		set { 
+			tk2dTextMesh text =  InfoTextObject.GetComponent<tk2dTextMesh>();
+			text.text = value;
+			text.Commit();
+		}
+	}
 	
 	void Start () {
 		
@@ -158,7 +168,7 @@ public class GameController : MonoBehaviour {
 	            // move this back to the game screen - graphics belong in the screen
 	            // not the game play logic
 //	            mDisplayStatus.Alpha = 1;
-//	            mDisplayStatus.DisplayText = "No legal position to play any tiles.  Game Over.";
+				this.InfoText = "No legal position to play any tiles.  Game Over.";
 //	            mDisplayStatus.AlphaRate = -0.5f;
 	        }
 	
@@ -353,7 +363,7 @@ public class GameController : MonoBehaviour {
 			// TODO
 //            mDisplayStatus.Alpha = 1;
 //            mDisplayStatus.AlphaRate = -0.5f;
-//            mDisplayStatus.DisplayText = "Not a legal move.";
+			InfoText = "Not a legal move.";
             GameEventManager.Instance.RaiseEvent(new GameEvent(
                 GameEvent.GameEventType.FAIL_PLACE,
                 mActiveDomino,
@@ -420,6 +430,7 @@ public class GameController : MonoBehaviour {
 			 */
            // show hightlight sprites
            ShowPlayer1Highlights();
+			InfoText = "Player 1's Move";
         }
         else
         {          
@@ -431,7 +442,8 @@ public class GameController : MonoBehaviour {
 			 */
             // show hightlight sprites
             ShowPlayer2Highlights();
-        }
+			InfoText = "Player 2's Move";
+		}
     }
 	
     void ShowPlayer1Highlights()
