@@ -276,10 +276,12 @@ public class GameController : MonoBehaviour {
 		} else {
             if (GamePlayManager.Instance.Player1Playing)
             {
+				InfoText = "Not a legal move.";
                 Debug.Log("Player 1 needs to make a move.");
             }
             else
             {
+				InfoText = "Not a legal move.";				
                 Debug.Log("Player 2 needs to make a move.");
             }
 		}
