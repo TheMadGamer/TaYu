@@ -191,7 +191,7 @@ public class Domino : MonoBehaviour, IDomino
         if (Instructions.Count == 0)
         {
             mController.RotationState = (mController.RotationState + 1) % 4;
-            InstructionManager.RotateToAccurate(this, 0, 0, 90.0f * mController.RotationState, sTimeToTake);
+            InstructionManager.RotateToAccurate(this, 0, 0, 90.0f, sTimeToTake);
         }
     }
 
@@ -205,7 +205,7 @@ public class Domino : MonoBehaviour, IDomino
             {
                 mController.RotationState += 4;
             }
-            InstructionManager.RotateToAccurate(this, 0, 0, 90.0f * mController.RotationState, sTimeToTake);
+            InstructionManager.RotateToAccurate(this, 0, 0, -90.0f, sTimeToTake);
         }
     }
 

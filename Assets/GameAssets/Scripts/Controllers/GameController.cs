@@ -235,27 +235,6 @@ public class GameController : MonoBehaviour {
             mDominos.Add(mActiveDomino);
 //            mIsDragging = true;
             mActiveDomino.SetHighlight(HighLightMode.Active);
-
-        } else if (mousePoint.x > 360) {
-			Debug.Log("Commit move");
-			if (mActiveDomino != null && TryToPlaceDomino()) {
-				Debug.Log("Committed move");
-				mActiveDomino = null;
-			} else {
-                if (GamePlayManager.Instance.Player1Playing)
-                {
-                    Debug.Log("Player 1 needs to make a move.");
-                }
-                else
-                {
-                    Debug.Log("Player 2 needs to make a move.");
-                }
-			}
-		} else if (mousePoint.y < -300) {
-			Debug.Log("Rotate");
-			if (mActiveDomino != null) {
-				mActiveDomino.GetComponent<Domino>().MoveClockWise();
-			}
 		}
 	}
 	
@@ -277,6 +256,30 @@ public class GameController : MonoBehaviour {
 	            mActiveDomino = null;
 	        }
 	    }
+	}
+	
+	public void CommitMove() {
+		Debug.Log("Commit move");
+		if (mActiveDomino != null && TryToPlaceDomino()) {
+			Debug.Log("Committed move");
+			mActiveDomino = null;
+		} else {
+            if (GamePlayManager.Instance.Player1Playing)
+            {
+                Debug.Log("Player 1 needs to make a move.");
+            }
+            else
+            {
+                Debug.Log("Player 2 needs to make a move.");
+            }
+		}
+	}
+	
+	public void Rotate() {
+		Debug.Log("Rotate");
+		if (mActiveDomino != null) {
+			mActiveDomino.GetComponent<Domino>().MoveClockWise();
+		}		
 	}
 	
 	List<Domino> getDominoList(List<GameObject> objectList) {
