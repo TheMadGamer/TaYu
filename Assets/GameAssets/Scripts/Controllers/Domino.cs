@@ -73,7 +73,7 @@ public class Domino : MonoBehaviour, IDomino
 		get { return this.mOverlaySpriteObject.GetComponent<tk2dSprite>(); }
 	}	
 	tk2dSprite mBorderSprite {
-		get { return this.mBorderSprite.GetComponent<tk2dSprite>(); }
+		get { return this.mBorderSpriteObject.GetComponent<tk2dSprite>(); }
 	}
 	
     DominoController mController;
@@ -94,6 +94,14 @@ public class Domino : MonoBehaviour, IDomino
 
 		// TODO - reenable this.
     }
+	
+	public void MakeActive() {
+		mOutlineSprite.color = Color.black;
+	}
+	
+	public void MakeInactive() {
+		mOutlineSprite.color = Color.white;
+	}
 
     public void Initialize(int label, WaterExit[] exits, int startPosition)
     {

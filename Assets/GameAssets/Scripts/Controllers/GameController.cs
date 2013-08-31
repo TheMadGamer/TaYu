@@ -30,6 +30,19 @@ public class GameController : MonoBehaviour {
 	float mTimeStamp;
 	public GameObject InfoTextObject;
 	
+	Domino ActiveDomino {
+		get { return mActiveDomino; }
+		set { 
+			if (mActiveDomino != null) {
+				mActiveDomino.MakeInactive();
+			}
+			mActiveDomino = value;
+			if (mActiveDomino != null) {
+				mActiveDomino.MakeActive();
+			}
+		}
+	}
+	
 	String InfoText {
 		get { return InfoTextObject.GetComponent<tk2dTextMesh>().text; }
 		set { 
@@ -83,10 +96,10 @@ public class GameController : MonoBehaviour {
             mBags.Add(bag);
         }
 
-	    mActiveDomino = GamePlayManager.Instance.GetNextDomino().GetComponent<Domino>();
-		mDominos.Add(mActiveDomino);
-        mActiveDomino.EnableGraphics(mBoard.Controller.Size);
-        mActiveDomino.SetHighlight(HighLightMode.Active);
+	    ActiveDomino = GamePlayManager.Instance.GetNextDomino().GetComponent<Domino>();
+		mDominos.Add(ActiveDomino);
+        ActiveDomino.EnableGraphics(mBoard.Controller.Size);
+        ActiveDomino.SetHighlight(HighLightMode.Active);
 	}
 	
 	void InitializeDisplay() {
@@ -136,7 +149,7 @@ public class GameController : MonoBehaviour {
 	        //draw into previous bag
 	        // before the change over
 	        Bag bag = GetActiveBag();
-	        mActiveDomino = null;
+	        ActiveDomino = null;
 	        if (bag.HasEmptySlot())
 	        {
 				Debug.Log("Add new domino");
@@ -219,60 +232,60 @@ public class GameController : MonoBehaviour {
 			Debug.Log("bag 1 contains");
 		}
 		
-		if (mBoard.Contains(mousePoint) && (mActiveDomino != null))
+		if (mBoard.Contains(mousePoint) && (ActiveDomino != null))
         {
             Debug.Log("Inside Board Limits and Active Domino - begin dragging");
-            if (mActiveDomino.Contains(mousePoint))
+            if (ActiveDomino.Contains(mousePoint))
             {
                 Debug.Log("Board contains mouse point");
 //                mIsDragging = true;
             }
         }
-        else if (mActiveDomino == null && GamePlayManager.Instance.Player1Playing && mBags[0].Contains(mousePoint))
+        else if (ActiveDomino == null && GamePlayManager.Instance.Player1Playing && mBags[0].Contains(mousePoint))
         {
             Debug.Log("Inside Bag Limits and Active Domino - begin dragging");
-            mActiveDomino = mBags[0].GetSelection(mousePoint);
-            mBags[0].RemoveDomino(mActiveDomino);
-            mDominos.Add(mActiveDomino);
+            ActiveDomino = mBags[0].GetSelection(mousePoint);
+            mBags[0].RemoveDomino(ActiveDomino);
+            mDominos.Add(ActiveDomino);
 //            mIsDragging = true;
-            mActiveDomino.SetHighlight(HighLightMode.Active);
+            ActiveDomino.SetHighlight(HighLightMode.Active);
         }
-        else if (mActiveDomino == null && (!GamePlayManager.Instance.Player1Playing) && mBags[1].Contains(mousePoint))
+        else if (ActiveDomino == null && (!GamePlayManager.Instance.Player1Playing) && mBags[1].Contains(mousePoint))
         {
             Debug.Log("Inside Bag Limits and Active Domino - begin dragging");
-            mActiveDomino = mBags[1].GetSelection(mousePoint);
-            mBags[1].RemoveDomino(mActiveDomino);
-            mDominos.Add(mActiveDomino);
+            ActiveDomino = mBags[1].GetSelection(mousePoint);
+            mBags[1].RemoveDomino(ActiveDomino);
+            mDominos.Add(ActiveDomino);
 //            mIsDragging = true;
-            mActiveDomino.SetHighlight(HighLightMode.Active);
+            ActiveDomino.SetHighlight(HighLightMode.Active);
 		}
 	}
 	
 	void HandleMove(Vector2 mousePosition) {
-        if (mActiveDomino != null)
+        if (ActiveDomino != null)
         {
-            MoveDominoToPoint(mActiveDomino, mousePosition);
+            MoveDominoToPoint(ActiveDomino, mousePosition);
         }	
 	}
 	
 	void HandleUp(Vector2 mousePosition){
-		if (mActiveDomino != null) {
-	        if (!LocationIsInBoard(mActiveDomino.Controller.Row, mActiveDomino.Controller.Column,
-	            mActiveDomino.Controller.IsHorizontal())) {
+		if (ActiveDomino != null) {
+	        if (!LocationIsInBoard(ActiveDomino.Controller.Row, ActiveDomino.Controller.Column,
+	            ActiveDomino.Controller.IsHorizontal())) {
 	            Bag activeBag = GetActiveBag();
-	            activeBag.AddDomino(mActiveDomino);
+	            activeBag.AddDomino(ActiveDomino);
 	
 	            // No longer active on board, set to null.
-	            mActiveDomino = null;
+	            ActiveDomino = null;
 	        }
 	    }
 	}
 	
 	public void CommitMove() {
 		Debug.Log("Commit move");
-		if (mActiveDomino != null && TryToPlaceDomino()) {
+		if (ActiveDomino != null && TryToPlaceDomino()) {
 			Debug.Log("Committed move");
-			mActiveDomino = null;
+			ActiveDomino = null;
 		} else {
             if (GamePlayManager.Instance.Player1Playing)
             {
@@ -289,8 +302,8 @@ public class GameController : MonoBehaviour {
 	
 	public void Rotate() {
 		Debug.Log("Rotate");
-		if (mActiveDomino != null) {
-			mActiveDomino.GetComponent<Domino>().MoveClockWise();
+		if (ActiveDomino != null) {
+			ActiveDomino.GetComponent<Domino>().MoveClockWise();
 		}		
 	}
 	
@@ -317,29 +330,29 @@ public class GameController : MonoBehaviour {
         {
             Bag ennemyBag = (GamePlayManager.Instance.Player1Playing) ? mBags[1] : mBags[0];
             List<IDomino> reducecomputerPlayingBag = new List<IDomino>();
-            reducecomputerPlayingBag.Add(mActiveDomino);
-            mActiveDomino = GamePlayManager.Instance.ComputersPlay(reducecomputerPlayingBag, ennemyBag.GetDominoes()) as Domino;
+            reducecomputerPlayingBag.Add(ActiveDomino);
+            ActiveDomino = GamePlayManager.Instance.ComputersPlay(reducecomputerPlayingBag, ennemyBag.GetDominoes()) as Domino;
         }
         else
         {
             Bag ennemyBag = (GamePlayManager.Instance.Player1Playing) ? mBags[1] : mBags[0];
             Bag computerPlayingBag = (GamePlayManager.Instance.Player1Playing) ? mBags[0] : mBags[1];
-            mActiveDomino = GamePlayManager.Instance.ComputersPlay(computerPlayingBag.GetDominoes(), ennemyBag.GetDominoes()) as Domino;
-            computerPlayingBag.RemoveDomino(mActiveDomino);
+            ActiveDomino = GamePlayManager.Instance.ComputersPlay(computerPlayingBag.GetDominoes(), ennemyBag.GetDominoes()) as Domino;
+            computerPlayingBag.RemoveDomino(ActiveDomino);
         }
 
         
         mTimeStamp = Time.time;
 
         // updates the graphical position of the domino
-        mActiveDomino.UpdateDominoLocation(mBoard.Controller.Size);
+        ActiveDomino.UpdateDominoLocation(mBoard.Controller.Size);
 
         // transfer control of domino to screen 
-        mDominos.Add(mActiveDomino);
+        mDominos.Add(ActiveDomino);
 
-        RaiseFXEventsAfterPlacedDomino(mActiveDomino);
+        RaiseFXEventsAfterPlacedDomino(ActiveDomino);
 
-        mActiveDomino = null;
+        ActiveDomino = null;
 
         DimBagDominoes(GamePlayManager.Instance.Player1Computer ? 0 : 1);
 
@@ -360,13 +373,13 @@ public class GameController : MonoBehaviour {
     /// <returns></returns>
     protected bool TryToPlaceDomino()
     {
-        bool isLegal = GamePlayManager.Instance.IsLegalMove(mActiveDomino.Controller);
+        bool isLegal = GamePlayManager.Instance.IsLegalMove(ActiveDomino.Controller);
 		Debug.Log("Legal move: " + isLegal.ToString());
         if (isLegal)
         {
-            GamePlayManager.Instance.PlaceDomino(mActiveDomino.Controller);
-            RaiseFXEventsAfterPlacedDomino(mActiveDomino);
-            mActiveDomino = null;
+            GamePlayManager.Instance.PlaceDomino(ActiveDomino.Controller);
+            RaiseFXEventsAfterPlacedDomino(ActiveDomino);
+            ActiveDomino = null;
         }
         else
         {
@@ -376,7 +389,7 @@ public class GameController : MonoBehaviour {
 			InfoText = "Not a legal move.";
             GameEventManager.Instance.RaiseEvent(new GameEvent(
                 GameEvent.GameEventType.FAIL_PLACE,
-                mActiveDomino,
+                ActiveDomino,
                 GamePlayManager.Instance.Player1Playing ? 0 : 1));
         }
 
