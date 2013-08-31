@@ -123,7 +123,7 @@ public class GameController : MonoBehaviour {
 		GameEventManager.Instance.Activity();
 		
 		if (GamePlayManager.Instance.Player1Playing && !GamePlayManager.Instance.Player1Computer) {
-			//Debug.Log("Player 1 move");
+			//Debug.Log("play");
 			HandleMouseInput();
 		} else if ((!GamePlayManager.Instance.Player1Playing) && !GamePlayManager.Instance.Player2Computer) {
 			//Debug.Log("Player 2 move");
@@ -168,7 +168,7 @@ public class GameController : MonoBehaviour {
 	            // move this back to the game screen - graphics belong in the screen
 	            // not the game play logic
 //	            mDisplayStatus.Alpha = 1;
-				this.InfoText = "No legal position to play any tiles.  Game Over.";
+				this.InfoText = " Game Over: No legal move.";
 //	            mDisplayStatus.AlphaRate = -0.5f;
 	        }
 	
@@ -292,6 +292,14 @@ public class GameController : MonoBehaviour {
 		if (mActiveDomino != null) {
 			mActiveDomino.GetComponent<Domino>().MoveClockWise();
 		}		
+	}
+	
+	public void Reload() {
+		Application.LoadLevel(0);
+	}
+	
+	public void Restart() {
+		Debug.Log("Show Info");
 	}
 	
 	List<Domino> getDominoList(List<GameObject> objectList) {
