@@ -106,6 +106,11 @@ public class Domino : MonoBehaviour, IDomino
 	public void MakeHint() {
 		mOutlineSprite.color = Color.gray;
 	}
+	
+	// For debugging.
+	public void AnyMove() {
+		
+	}
 
     public void Initialize(int label, WaterExit[] exits, int startPosition)
     {

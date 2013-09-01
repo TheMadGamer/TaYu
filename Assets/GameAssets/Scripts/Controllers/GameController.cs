@@ -126,12 +126,7 @@ public class GameController : MonoBehaviour {
         ActiveDomino.SetHighlight(HighLightMode.Active);
 	}
 
-	void Update () {
-
-		if (GamePlayManager.Instance.GameOver) {
-			Debug.Log("Restart game?");
-		} 
-		
+	void Update () {		
 		GameEventManager.Instance.Activity();
 		
 		if (GamePlayManager.Instance.Player1Playing && !GamePlayManager.Instance.Player1Computer) {
@@ -179,9 +174,16 @@ public class GameController : MonoBehaviour {
 				Debug.Log("Game over");
 	            // move this back to the game screen - graphics belong in the screen
 	            // not the game play logic
-//	            mDisplayStatus.Alpha = 1;
-				this.InfoText = " Game Over: No legal move.";
-//	            mDisplayStatus.AlphaRate = -0.5f;
+				int score1 = mBoard.Controller.CalculatePlayer1Score();
+				int score2 = mBoard.Controller.CalculatePlayer2Score();
+				
+				if (score1 > score2) {
+					this.InfoText = "Game Over: " + mPlayer1Name + " wins!";
+				} else if (score2 > score1) {
+					this.InfoText = "Game Over: " + mPlayer2Name + " wins!";
+				} else {
+					this.InfoText = "Game Over: Draw";
+				}
 	        }
 	
 	        mTimeStamp = Time.time;
@@ -411,6 +413,42 @@ public class GameController : MonoBehaviour {
 			// TODO add some fancy graphics.
 			GameObject.Destroy(mHintDominoObject);
 		}
+	}
+	
+	public void PlaceAnyDomino() {
+		int bagIdx = GamePlayManager.Instance.Player1Playing ? 0 : 1;
+	    if (GamePlayManager.Instance.FirstDominoSet)
+        {
+			for (int domIdx = 0; domIdx < 3; domIdx++) {
+	            Domino d = mBags[bagIdx].GetDominoes()[0] as Domino;
+	            mDominos.Add(d);
+	
+	            for (int r = 0; r < 4; r++)
+	            {
+	
+	                for (int i = 0; i < GamePlayManager.Instance.BoardSize; i++)
+	                {
+	                    for (int j = 0; j < GamePlayManager.Instance.BoardSize; j++)
+	                    {
+	                        d.Controller.RotationState = r;
+	                        d.Controller.Row = i;
+	                        d.Controller.Column = j;
+	
+	
+	                        if (mBoard.Controller.IsLegalMove(d.Controller))
+	                        {
+	                            ActiveDomino = d;
+	                            TryToPlaceDomino();
+	                            mBags[bagIdx].RemoveDomino(d);
+	                            d.UpdateDominoLocation(mBoard.Controller.Size);
+								ActiveDomino = null;
+								return;
+	                        }
+	                    }
+	                }
+	            }
+			}
+        }
 	}
 	
     private List<IDomino> CloneBag(Bag bag)
