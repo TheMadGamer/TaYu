@@ -33,6 +33,8 @@ public class GameController : MonoBehaviour {
 	public GameObject mPlayer1Text;
 	public GameObject mPlayer2Text;
 	
+	public GameObject mHintDominoObject;
+	
 	Domino ActiveDomino {
 		get { return mActiveDomino; }
 		set { 
@@ -155,7 +157,7 @@ public class GameController : MonoBehaviour {
 	            domino.EnableGraphics(mBoard.Controller.Size);
 	            bag.AddDomino(domino);
 	            //check there's a legal move in that bag
-	            List<IDomino> cloneDominoes = CloneBag(bag, mDominoObject);
+	            List<IDomino> cloneDominoes = CloneBag(bag);
 	            GamePlayManager.Instance.CheckForGameOver(cloneDominoes);
 				DestroyBag(cloneDominoes);
 	        }
@@ -216,19 +218,9 @@ public class GameController : MonoBehaviour {
 		// TODO: Handle rotation;
 	}
 	
-	void HandleDown(Vector2 mousePoint){
-        // Clicked inside board and there is an active domino.
-        //Debug.Log("Handle down" + mousePoint.ToString());
-
-		
-		if (mBags[0].Contains(mousePoint)) {
-			Debug.Log("bag 0 contains");
-		}
-
-		if (mBags[1].Contains(mousePoint)) {
-			Debug.Log("bag 1 contains");
-		}
-		
+	void HandleDown(Vector2 mousePoint) {
+		HideHintIfVisible();
+        // Clicked inside board and there is an active domino.	
 		if (mBoard.Contains(mousePoint) && (ActiveDomino != null))
         {
             Debug.Log("Inside Board Limits and Active Domino - begin dragging");
@@ -308,7 +300,7 @@ public class GameController : MonoBehaviour {
 		Application.LoadLevel(0);
 	}
 	
-	public void Restart() {
+	public void ShowInfo() {
 		Debug.Log("Show Info");
 	}
 	
@@ -395,7 +387,33 @@ public class GameController : MonoBehaviour {
         return isLegal;
     }
 	
-    private static List<IDomino> CloneBag(Bag bag, GameObject dominoPrefab)
+	public void ShowHint() {
+		Debug.Log("Show Hint");
+        Bag bag = GetActiveBag();
+        List<IDomino> cloneDominoes = CloneBag(bag);
+		int labelId;
+		int row;
+		int column;
+		int rotation;
+        GamePlayManager.Instance.CheckForHintDomino(cloneDominoes, out labelId, out row, out column, out rotation);
+        Domino hintDomino = GamePlayManager.Instance.CreateDomino(labelId);
+        hintDomino.Controller.Row = row;
+        hintDomino.Controller.Column = column;
+        hintDomino.Controller.RotationState = rotation;
+        hintDomino.UpdateDominoLocation(mBoard.Controller.Size);
+		hintDomino.MakeHint();
+		mHintDominoObject = hintDomino.gameObject;
+		DestroyBag(cloneDominoes);
+	}
+	
+	private void HideHintIfVisible() {
+		if (mHintDominoObject != null) {
+			// TODO add some fancy graphics.
+			GameObject.Destroy(mHintDominoObject);
+		}
+	}
+	
+    private List<IDomino> CloneBag(Bag bag)
     {
 		Debug.Log("Cloning bag");
         List<IDomino> cloneDominoes = new List<IDomino>();
@@ -407,7 +425,7 @@ public class GameController : MonoBehaviour {
 				Debug.Log("Cloning domino");
 				// Generate a game object, add component. 
 				// TODO: This bag needs to be properly removed.
-				GameObject dominoObject = GameObject.Instantiate(dominoPrefab) as GameObject;
+				GameObject dominoObject = GameObject.Instantiate(mDominoObject) as GameObject;
 				Domino domino = dominoObject.GetComponent<Domino>();
 				domino.Initialize(cloneDomino);
 				domino.DisableGraphics();
