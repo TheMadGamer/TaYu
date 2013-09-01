@@ -30,6 +30,9 @@ public class GameController : MonoBehaviour {
 	float mTimeStamp;
 	public GameObject InfoTextObject;
 	
+	public GameObject mPlayer1Text;
+	public GameObject mPlayer2Text;
+	
 	Domino ActiveDomino {
 		get { return mActiveDomino; }
 		set { 
@@ -48,6 +51,25 @@ public class GameController : MonoBehaviour {
 		set { 
 			tk2dTextMesh text =  InfoTextObject.GetComponent<tk2dTextMesh>();
 			text.text = value;
+			text.Commit();
+		}
+	}
+	
+	String Player1Text {
+		get { return mPlayer1Text.GetComponent<tk2dTextMesh>().text; }
+		set { 
+			tk2dTextMesh text = mPlayer1Text.GetComponent<tk2dTextMesh>();
+			text.text = value; 
+			text.Commit();
+		}
+	}
+
+	String Player2Text {
+		get {return mPlayer2Text.GetComponent<tk2dTextMesh>().text; }
+		set { 
+			Debug.Log("Set Player 2 text " + value);
+			tk2dTextMesh text = mPlayer2Text.GetComponent<tk2dTextMesh>();
+			text.text = value; 
 			text.Commit();
 		}
 	}
@@ -100,31 +122,6 @@ public class GameController : MonoBehaviour {
 		mDominos.Add(ActiveDomino);
         ActiveDomino.EnableGraphics(mBoard.Controller.Size);
         ActiveDomino.SetHighlight(HighLightMode.Active);
-	}
-	
-	void InitializeDisplay() {
-		/*
-		// display text
-        mDisplayPlayerOneScore.X = 0;
-        mDisplayPlayerOneScore.Y = (Board.Size * 0.5f + 1) * Square.kPixelSize;
-        mDisplayPlayerOneScore.Scale = kTextSize;
-        mDisplayPlayerOneScore.Spacing = kTextSize;
-        mDisplayPlayerOneScore.HorizontalAlignment = HorizontalAlignment.Center;
-
-        // display text
-        mDisplayPlayerTwoScore.X = -(Board.Size * 0.5f + 1) * Square.kPixelSize - 80;
-        mDisplayPlayerTwoScore.Y = 0;
-        mDisplayPlayerTwoScore.Scale = kTextSize;
-        mDisplayPlayerTwoScore.Spacing = kTextSize;
-        mDisplayPlayerTwoScore.HorizontalAlignment = HorizontalAlignment.Center;
-
-        
-        // display status text
-        mDisplayStatus.Y = -(Board.Size * 0.5f + 1) * Square.kPixelSize;
-        mDisplayStatus.Scale = kTextSize;
-        mDisplayStatus.Spacing = kTextSize;
-        mDisplayStatus.HorizontalAlignment = HorizontalAlignment.Center;
-		 */
 	}
 
 	void Update () {
@@ -445,29 +442,17 @@ public class GameController : MonoBehaviour {
         // this fades the active player's text alpha (dims it)
         if (GamePlayManager.Instance.Player1Playing)
         {
-			/*
-            mDisplayPlayerOneScore.AlphaRate = 0.75f;
-            mDisplayPlayerOneScore.BlendOperation = BlendOperation.Regular;
-            mDisplayPlayerTwoScore.Alpha = 0.75f;
-            mDisplayPlayerTwoScore.BlendOperation = BlendOperation.Regular;
-			 */
-           // show hightlight sprites
-           ShowPlayer1Highlights();
+            ShowPlayer1Highlights();
 			InfoText = "Player 1's Move";
         }
         else
-        {          
-			/*
-            mDisplayPlayerOneScore.Alpha = 0.75f;  
-            mDisplayPlayerOneScore.BlendOperation = BlendOperation.Regular;
-            mDisplayPlayerTwoScore.AlphaRate = 0.75f;
-            mDisplayPlayerTwoScore.BlendOperation = BlendOperation.Regular;
-			 */
-            // show hightlight sprites
+        {   
             ShowPlayer2Highlights();
 			InfoText = "Player 2's Move";
 		}
-    }
+		Player1Text = mPlayer1Name + ": " + mBoard.Controller.CalculatePlayer1Score().ToString();
+		Player2Text = mPlayer2Name + ": " + mBoard.Controller.CalculatePlayer2Score().ToString();
+	}
 	
     void ShowPlayer1Highlights()
     {
