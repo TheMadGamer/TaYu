@@ -34,6 +34,9 @@ public class GameController : MonoBehaviour {
 	public GameObject mPlayer2Text;
 	
 	public GameObject mHintDominoObject;
+	public GameObject mReloadDialog;
+	
+	bool mShowingModalDialog = false;
 	
 	Domino ActiveDomino {
 		get { return mActiveDomino; }
@@ -197,6 +200,11 @@ public class GameController : MonoBehaviour {
 	}
 		
 	void HandleMouseInput() {
+		if (mShowingModalDialog) {
+			return;
+		}
+
+		
 		// Center input position vector.
 		Vector2 inputPos = Input.mousePosition;
 		// Center
@@ -272,6 +280,9 @@ public class GameController : MonoBehaviour {
 	}
 	
 	public void CommitMove() {
+		if (mShowingModalDialog) {
+			return;
+		}
 		Debug.Log("Commit move");
 		if (ActiveDomino != null && TryToPlaceDomino()) {
 			Debug.Log("Committed move");
@@ -291,17 +302,41 @@ public class GameController : MonoBehaviour {
 	}
 	
 	public void Rotate() {
+		if (mShowingModalDialog) {
+			return;
+		}
+
 		Debug.Log("Rotate");
 		if (ActiveDomino != null) {
 			ActiveDomino.GetComponent<Domino>().MoveClockWise();
 		}		
 	}
 	
-	public void Reload() {
+	public void ShowReloadDialog() {
+		if (mShowingModalDialog) {
+			return;
+		}
+
+		mReloadDialog.SetActiveRecursively(true);
+		mShowingModalDialog = true;
+	}
+	
+	public void ReloadGame() {
+		mReloadDialog.SetActiveRecursively(false);
+		mShowingModalDialog = false;
 		Application.LoadLevel(0);
 	}
 	
+	public void CancelRestart() {
+		mReloadDialog.SetActiveRecursively(false);
+		mShowingModalDialog = false;
+	}
+	
 	public void ShowInfo() {
+		if (mShowingModalDialog) {
+			return;
+		}
+
 		Debug.Log("Show Info");
 	}
 	
@@ -404,6 +439,10 @@ public class GameController : MonoBehaviour {
     }
 	
 	public void ShowHint() {
+		if (mShowingModalDialog) {
+			return;
+		}
+
 		Debug.Log("Show Hint");
         Bag bag = GetActiveBag();
         List<IDomino> cloneDominoes = CloneBag(bag);
