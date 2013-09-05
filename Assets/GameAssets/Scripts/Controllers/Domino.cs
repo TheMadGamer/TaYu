@@ -96,7 +96,7 @@ public class Domino : MonoBehaviour, IDomino
     }
 	
 	public void MakeActive() {
-		mOutlineSprite.color = Color.black;
+		mOutlineSprite.color = new Color(0.7f, 0.7f, 0.7f);
 	}
 	
 	public void MakeInactive() {
@@ -104,7 +104,7 @@ public class Domino : MonoBehaviour, IDomino
 	}
 	
 	public void MakeHint() {
-		mOutlineSprite.color = Color.gray;
+		mOutlineSprite.color = new Color(0.7f, 0.6f, 0.7f);
 	}
 	
 	// For debugging.
