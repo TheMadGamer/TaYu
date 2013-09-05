@@ -38,13 +38,7 @@ public class GameController : MonoBehaviour {
 	Domino ActiveDomino {
 		get { return mActiveDomino; }
 		set { 
-			if (mActiveDomino != null) {
-				mActiveDomino.MakeInactive();
-			}
 			mActiveDomino = value;
-			if (mActiveDomino != null) {
-				mActiveDomino.MakeActive();
-			}
 		}
 	}
 	
@@ -121,6 +115,9 @@ public class GameController : MonoBehaviour {
         }
 
 	    ActiveDomino = GamePlayManager.Instance.GetNextDomino().GetComponent<Domino>();
+		if (mActiveDomino != null) {
+			mActiveDomino.MakeActive();
+		}
 		mDominos.Add(ActiveDomino);
         ActiveDomino.EnableGraphics(mBoard.Controller.Size);
         ActiveDomino.SetHighlight(HighLightMode.Active);
@@ -236,6 +233,7 @@ public class GameController : MonoBehaviour {
         {
             Debug.Log("Inside Bag Limits and Active Domino - begin dragging");
             ActiveDomino = mBags[0].GetSelection(mousePoint);
+			
             mBags[0].RemoveDomino(ActiveDomino);
             mDominos.Add(ActiveDomino);
 //            mIsDragging = true;
@@ -268,6 +266,7 @@ public class GameController : MonoBehaviour {
 	
 	            // No longer active on board, set to null.
 	            ActiveDomino = null;
+				// Leave active.
 	        }
 	    }
 	}
@@ -276,7 +275,7 @@ public class GameController : MonoBehaviour {
 		Debug.Log("Commit move");
 		if (ActiveDomino != null && TryToPlaceDomino()) {
 			Debug.Log("Committed move");
-			ActiveDomino = null;
+			ActiveDomino = null;			
 		} else {
             if (GamePlayManager.Instance.Player1Playing)
             {
@@ -342,17 +341,31 @@ public class GameController : MonoBehaviour {
         mDominos.Add(ActiveDomino);
 
         RaiseFXEventsAfterPlacedDomino(ActiveDomino);
-
+		ActiveDomino.MakeInactive();
         ActiveDomino = null;
 
-        DimBagDominoes(GamePlayManager.Instance.Player1Computer ? 0 : 1);
+        ActivateBagDominoes(GamePlayManager.Instance.Player1Computer ? 0 : 1);
 
     }
 	
-	private void DimBagDominoes(int index) {
+	private void InactivateBagDominoes(int index) {
 		// TODO
+		Bag bag = mBags[index];
+		for (int domIdx = 0; domIdx < 3; domIdx++) {
+	        Domino d = bag.GetDominoes()[domIdx] as Domino;
+	        d.MakeInactive();
+		}
 	}
- 
+
+	private void ActivateBagDominoes(int index) {
+		// TODO
+		Bag bag = mBags[index];
+		for (int domIdx = 0; domIdx < 3; domIdx++) {
+	        Domino d = bag.GetDominoes()[domIdx] as Domino;
+	        d.MakeActive();
+		}
+	}
+	
 	private void RaiseFXEventsAfterPlacedDomino(Domino domino)
     {
 		// TODO
@@ -370,6 +383,7 @@ public class GameController : MonoBehaviour {
         {
             GamePlayManager.Instance.PlaceDomino(ActiveDomino.Controller);
             RaiseFXEventsAfterPlacedDomino(ActiveDomino);
+			ActiveDomino.MakeInactive();
             ActiveDomino = null;
         }
         else
@@ -512,13 +526,15 @@ public class GameController : MonoBehaviour {
 	
     void ShowPlayer1Highlights()
     {
-		// TODO
+		ActivateBagDominoes(0);
+		InactivateBagDominoes(1);
 	}
 
 	
 	void ShowPlayer2Highlights()
     {
-		// TODO
+		ActivateBagDominoes(1);
+		InactivateBagDominoes(0);
 	}
 	
 	

@@ -96,12 +96,12 @@ public class Domino : MonoBehaviour, IDomino
     }
 	
 	public void MakeActive() {
-		mOutlineSprite.color = new Color(0.7f, 0.7f, 0.7f);
+		mOutlineSprite.color = Color.white;
 		gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, -4f);
 	}
 	
 	public void MakeInactive() {
-		mOutlineSprite.color = Color.white;
+		mOutlineSprite.color = new Color(0.7f, 0.7f, 0.7f);
 		gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, 0);		
 	}
 	
