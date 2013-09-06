@@ -38,6 +38,9 @@ public class GameController : MonoBehaviour {
 	
 	bool mShowingModalDialog = false;
 	
+	public GameObject mHelpView;
+	int mHelpIndex = 0;
+	
 	Domino ActiveDomino {
 		get { return mActiveDomino; }
 		set { 
@@ -332,12 +335,28 @@ public class GameController : MonoBehaviour {
 		mShowingModalDialog = false;
 	}
 	
-	public void ShowInfo() {
+	public void ShowHelp() {
 		if (mShowingModalDialog) {
 			return;
 		}
-
+		mShowingModalDialog = true;
 		Debug.Log("Show Info");
+		mHelpView.SetActiveRecursively(true);
+	}
+	
+	public void HideHelp() {
+		mHelpView.SetActiveRecursively(false);
+		mShowingModalDialog = false;
+	}
+	
+	public void NextHelp() {
+		if (mHelpIndex == 5) {
+			mHelpIndex = 0;
+			HideHelp();
+		} else {
+			// Set next help image.
+			mHelpIndex++;
+		}
 	}
 	
 	List<Domino> getDominoList(List<GameObject> objectList) {
