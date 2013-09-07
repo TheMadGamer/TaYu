@@ -342,6 +342,8 @@ public class GameController : MonoBehaviour {
 		mShowingModalDialog = true;
 		Debug.Log("Show Info");
 		mHelpView.SetActiveRecursively(true);
+		
+		// Set first sprite 
 	}
 	
 	public void HideHelp() {
@@ -350,13 +352,14 @@ public class GameController : MonoBehaviour {
 	}
 	
 	public void NextHelp() {
-		if (mHelpIndex == 5) {
-			mHelpIndex = 0;
+		tk2dSprite sprite = mHelpView.GetComponent<tk2dSprite>();
+		if (mHelpIndex == 6) {
+			mHelpIndex = 0;		
 			HideHelp();
 		} else {
-			// Set next help image.
 			mHelpIndex++;
 		}
+		sprite.SetSprite("Help" + mHelpIndex.ToString());
 	}
 	
 	List<Domino> getDominoList(List<GameObject> objectList) {
