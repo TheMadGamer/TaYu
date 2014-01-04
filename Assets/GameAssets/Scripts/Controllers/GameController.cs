@@ -230,7 +230,13 @@ public class GameController : MonoBehaviour {
 	
 	void HandleDown(Vector2 mousePoint) {
 		HideHintIfVisible();
-        // Clicked inside board and there is an active domino.	
+		// For debug. Remove.
+		//if (mousePoint.x > 300 && mousePoint.y > 200) {
+		//	PlaceAnyDomino();
+		//	return;
+		//}
+
+		// Clicked inside board and there is an active domino.	
 		if (mBoard.Contains(mousePoint) && (ActiveDomino != null))
         {
             Debug.Log("Inside Board Limits and Active Domino - begin dragging");
